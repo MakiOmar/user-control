@@ -1,11 +1,31 @@
 /* Change the default chrome's input field color;) */
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px #1D9313 inset;
-	box-shadow: 0 0 0 30px #1D9313 inset;
+    -webkit-box-shadow: 0 0 0 30px #6eb168 inset;
+	box-shadow: 0 0 0 30px #6eb168 inset;
 }
 /*Change text in autofill textbox*/
 input:-webkit-autofill {
     -webkit-text-fill-color: white !important;
+}
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+    background-color: transparent!important;
+    color: #ffffff!important;
+}
+:focus{
+	     outline-color: transparent;
+	color: aliceblue;
+}
+.user-control  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgba(232,227,227,0.70);
+    opacity: 1; /* Firefox */
+}
+
+.user-control :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgba(232,227,227,0.70);
+}
+
+.user-control ::-ms-input-placeholder { /* Microsoft Edge */
+    color: rgba(232,227,227,0.70);
 }
 .usercontrol {
 	position: fixed;
@@ -16,41 +36,42 @@ input:-webkit-autofill {
 	transform: translateX(-50%);
 	z-index: 100;
 }
-#usercontrol {
-	background-color: #1D9313;
+.user-control {
+	background-color: #6eb168;
 	padding: 20px;
 	border-radius: 30px 0 30px 0;
 	color: aliceblue;
 }
 
-#usercontrol a,#usercontrol p{
+.user-control a,.user-control p{
 	color: aliceblue !important;
 	padding: 5px;
 }
 
-#usercontrol div{
+.user-control div{
 	padding: 0 8px;
 }
 
-#usercontrol form{
+.user-control p,.login-info{
+	text-align: center!important;
+}
+.user-control form{
 	width: 95%;
 	margin: auto;
 }
 .forgot-password{
 	display: inline-block;
-    width: 70%;
 	color: #222222;
 	font-size: 14px;
-	text-align: right;
 }
-#login .smpg-button{
+.user-control-form .smpg-button{
 	display: inline-block;
     width: 30%;
 	padding: 5px;
 	line-height: 25px;
 	color: aliceblue;
 	text-align: center;
-	background-color: #1D9313;
+	background-color: #f33806;
 	border: none;
 	cursor: pointer;
 	font-weight: bold;
@@ -60,17 +81,18 @@ input:-webkit-autofill {
 	width: auto!important;
 }
 
-#login input {
+.user-control-form input {
 	width: 100%;
 	font-size: 18px;
-	color: rgba(81, 76, 76,1);
+	color: #ffffff!important;
 	background-color: transparent;
-	font-family: FontAwesome;
 	padding: 15px;
 	border:0;
 	border-top: 1px solid #ffffff;
 	border-bottom: 1px solid #ffffff;
+	font-family: FontAwesome;
 }
+
 .password {
 	border-top: none!important;
 }
