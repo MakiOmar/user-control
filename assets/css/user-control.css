@@ -1,0 +1,43 @@
+.usercontrol {
+	position: fixed;
+	bottom: 0;
+	padding: 0;
+	margin: auto;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 100;
+}
+
+.toggleme {
+	cursor: pointer;
+	width: 25%;
+	background-color: #222222;
+	padding: 8px;
+	color: aliceblue;
+	display: block;
+	text-align: center;
+	margin: auto;
+}
+
+#usercontrol {
+	background-color: aliceblue;
+	padding-bottom: 20px;
+}
+
+#usercontrol div{
+	padding: 0 8px;
+}
+.forgot-password{
+	display: inline-block;
+    width: 70%;
+	color: #222222;
+	font-size: 14px;
+	text-align: right;
+}
+#login .button{
+	display: inline-block;
+    width: 30%;
+}
+#rememberme{
+	width: auto!important;
+}
