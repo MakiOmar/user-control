@@ -485,3 +485,13 @@ public function do_password_reset() {
 $user_control_login_pages_plugin = new User_Control_Login_Plugin();
 register_activation_hook( __FILE__, array( 'User_Control_Login_Plugin', 'plugin_activated' ) );
 
+//Plugin Scripts
+add_action('wp_enqueue_scripts','smartpage_user_control_scripts');
+
+function smartpage_user_control_scripts() {
+		$script = 'user-control';
+		wp_enqueue_style( $script , plugin_dir_url( __FILE__ ).('assets/css/'.$script.'.css') ,'', filemtime(plugin_dir_path( __FILE__ ).('assets/css/'.$script.'.css')));
+		wp_enqueue_script( $script , plugin_dir_url( __FILE__ ).('assets/js/'.$script.'.js') ,array('jquery'),filemtime(plugin_dir_path( __FILE__ ).('assets/js/'.$script.'.js')),true);
+	
+
+}
