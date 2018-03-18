@@ -15,7 +15,7 @@
 			  <input type="text" name="log" id="user_login" class="username" value="" placeholder="<?php _e('&#xf090; Email Adress','user-control');?>"/>
 			  <input type="password" name="pwd" id="user_pass"  class="password" value="" placeholder="<?php _e('&#xf09c; Password','user-control');?>"/>
 			  <p class="forgetmenot"><label for="rememberme"><input name="rememberme" type="checkbox" id="rememberme" value="forever"/> <?php esc_html_e( 'Remember Me' ); ?></label></p>
-			  <button type="submit" class="button" form="login"><?php _e('Login','user-control');?></button>
+			  <button type="submit" class="smpg-button" form="login"><?php _e('Login','user-control');?></button>
 			  <a class="forgot-password" href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Forgot your password?', 'user-control' ); ?></a>
 			</form>	
 	</div>
