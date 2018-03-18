@@ -88,7 +88,7 @@ class User_Control_Login_Plugin {
 		 $redir = home_url('/').$attributes['redirect'];
 	 }
 	 if (is_user_logged_in()){
-		 return "You are already logged in";
+		 return "<p>You are already logged in</p>";
 	 }else{
 		 // Error messages
 		$errors = array();
