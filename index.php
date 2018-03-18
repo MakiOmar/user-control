@@ -6,7 +6,7 @@ Description: Adds a user control interface for login, register and forget passwo
 Version: 1.0.0
 Author: Mohammad Omar
 Author URI: https://prosentra.com
-Text Domain: usercontrol
+Text Domain: user-control
 License: GPL2
 */
 class User_Control_Login_Plugin {
@@ -335,7 +335,7 @@ case 'password_reset_empty':
 			$error_codes = explode( ',', $_REQUEST['errors'] );
 
 			foreach ( $error_codes as $error_code ) {
-				$attributes['errors'] []= $this->get_error_message( $error_code );
+				$attributes['errors'] []= $this->show_error_message( $error_code );
 			}
 		}
 
@@ -412,7 +412,7 @@ public function do_password_lost() {
 				$error_codes = explode( ',', $_REQUEST['error'] );
 
 				foreach ( $error_codes as $code ) {
-					$errors []= $this->get_error_message( $code );
+					$errors []= $this->show_error_message( $code );
 				}
 			}
 			$attributes['errors'] = $errors;
