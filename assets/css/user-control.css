@@ -1,3 +1,12 @@
+/* Change the default chrome's input field color;) */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px #1D9313 inset;
+	box-shadow: 0 0 0 30px #1D9313 inset;
+}
+/*Change text in autofill textbox*/
+input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+}
 .usercontrol {
 	position: fixed;
 	bottom: 0;
@@ -9,8 +18,14 @@
 }
 #usercontrol {
 	background-color: #1D9313;
-	padding-bottom: 20px;
+	padding: 20px;
 	border-radius: 30px 0 30px 0;
+	color: aliceblue;
+}
+
+#usercontrol a,#usercontrol p{
+	color: aliceblue !important;
+	padding: 5px;
 }
 
 #usercontrol div{
@@ -28,10 +43,34 @@
 	font-size: 14px;
 	text-align: right;
 }
-#login .button{
+#login .smpg-button{
 	display: inline-block;
     width: 30%;
+	padding: 5px;
+	line-height: 25px;
+	color: aliceblue;
+	text-align: center;
+	background-color: #1D9313;
+	border: none;
+	cursor: pointer;
+	font-weight: bold;
+	margin-top: 10px;
 }
 #rememberme{
 	width: auto!important;
+}
+
+#login input {
+	width: 100%;
+	font-size: 18px;
+	color: rgba(81, 76, 76,1);
+	background-color: transparent;
+	font-family: FontAwesome;
+	padding: 15px;
+	border:0;
+	border-top: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
+}
+.password {
+	border-top: none!important;
 }
