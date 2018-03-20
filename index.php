@@ -28,6 +28,9 @@ class User_Control_Login_Plugin {
 		add_action( 'login_form_resetpass', array( $this, 'redirect_to_custom_password_reset' ) );
 		add_action( 'login_form_lostpassword', array( $this, 'do_password_lost' ) );
 		add_action( 'login_form_lostpassword', array( $this, 'redirect_to_custom_lostpassword' ) );
+		add_action('wp_enqueue_scripts',array( $this, 'smartpage_user_control_scripts'));
+		add_action( 'after_setup_theme', array($this, 'smartpage_reg_menus' ) );
+		add_filter("wp_nav_menu_users-control_items",array( $this, "add_user_control_menu_pages"),10 , 2);
     }
 	public static function plugin_activated() {
 	  // Information needed for creating the plugin's pages
@@ -72,6 +75,7 @@ class User_Control_Login_Plugin {
 				);
 			}
 	 }
+
 }
 	public function render_login_form( $attributes, $content = null ) {
 	 $default_attributes = array( 'show_title' => 'hide', 'redirect' => home_url() );
@@ -350,7 +354,7 @@ case 'password_reset_empty':
 			return $this->get_template_html( 'password_lost_form', $attributes );
 		}
 	}
-public function do_password_lost() {
+	public function do_password_lost() {
 	if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
 		$errors = retrieve_password();
 		if ( is_wp_error( $errors ) ) {
@@ -429,7 +433,7 @@ public function do_password_lost() {
 		}
 	}
 }
-public function do_password_reset() {
+	public function do_password_reset() {
 	if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
 		$rp_key = $_REQUEST['rp_key'];
 		$rp_login = $_REQUEST['rp_login'];
@@ -480,18 +484,48 @@ public function do_password_reset() {
 		exit;
 	}
 }
+	public function smartpage_user_control_scripts() {
+		$script = 'user-control';
+		wp_enqueue_style( $script , plugin_dir_url( __FILE__ ).('assets/css/'.$script.'.css') ,'', filemtime(plugin_dir_path( __FILE__ ).('assets/css/'.$script.'.css')));
+		wp_enqueue_script( $script , plugin_dir_url( __FILE__ ).('assets/js/'.$script.'.js') ,array('jquery'),filemtime(plugin_dir_path( __FILE__ ).('assets/js/'.$script.'.js')),true);
+}
+
+	public function smartpage_reg_menus(){
+		$menus= array(
+			'users-control'=>__('User control menu','user-control'),
+		); 
+		foreach($menus as $name => $description){
+			if(!has_nav_menu($name)){
+				register_nav_menu($name, $description);
+			}
+		}
+		$menu_name = 'Users control';
+		$menu_exists = wp_get_nav_menu_object( $menu_name );
+		// If it doesn't exist, let's create it.
+		if( !$menu_exists){
+			$menu_id = wp_create_nav_menu($menu_name);
+			$locations = get_theme_mod('nav_menu_locations');
+			$locations[sanitize_title($menu_name)] = $menu_id;
+			set_theme_mod( 'nav_menu_locations', $locations );
+		}
+}
+	public function add_user_control_menu_pages($item , $args){
+		$menu = get_term_by('slug','users-control','nav_menu');
+		if($menu->count === 0){
+			$user_menu_pages = array('Sign in','Register', 'Your Account');
+			foreach($user_menu_pages as $page){
+				$post_obj = get_page_by_title($page);
+				$page_url = get_permalink($post_obj->ID);
+				$item .='<li>';
+				$item .= '<a class="users-menu" href="'.$page_url.'">';
+				$item .=$page;
+				$item .= '</a><li>';
+			}
+			return $item;
+		}
+		return  $item;	
+}
 }
 
 $user_control_login_pages_plugin = new User_Control_Login_Plugin();
 register_activation_hook( __FILE__, array( 'User_Control_Login_Plugin', 'plugin_activated' ) );
-
-//Plugin Scripts
-add_action('wp_enqueue_scripts','smartpage_user_control_scripts');
-
-function smartpage_user_control_scripts() {
-		$script = 'user-control';
-		wp_enqueue_style( $script , plugin_dir_url( __FILE__ ).('assets/css/'.$script.'.css') ,'', filemtime(plugin_dir_path( __FILE__ ).('assets/css/'.$script.'.css')));
-		wp_enqueue_script( $script , plugin_dir_url( __FILE__ ).('assets/js/'.$script.'.js') ,array('jquery'),filemtime(plugin_dir_path( __FILE__ ).('assets/js/'.$script.'.js')),true);
-	
-
-}
