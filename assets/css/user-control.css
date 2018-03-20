@@ -96,3 +96,50 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 .password {
 	border-top: none!important;
 }
+#user_nav_con, #user_menu_con .fa{
+	padding: 3px;
+}
+#user_nav_con, #user_menu_con li span{
+	display: flex;
+}
+#user_menu_con,#user_menu_con .user-dropdown{
+	width:160px;
+}
+#user_menu_con li span i{
+	cursor: pointer;
+}
+#user_menu_con li{
+	position: relative;
+}
+#user_menu_con li a{
+	line-height: 30px;
+	color: #444444;
+}
+#user_menu_con .user-dropdown{
+	position: absolute;
+	display: none;
+	-webkit-box-shadow: 0 8px 10px -6px #4b4949;
+       -moz-box-shadow: 0 8px 10px -6px #4b4949;
+            box-shadow: 0 8px 10px -6px #4b4949;
+	background-color: aliceblue;
+	z-index: 99;
+	
+}
+#user_menu_con .user-dropdown li{
+	border-bottom: 1px solid rgba(197,193,193,0.70);
+}
+#user_menu_con .user-dropdown li:last-child{
+	border-bottom: none;
+}
+
+@media screen and (max-width: 760px){
+	#user_nav_con{
+		width: 160px;
+		position: absolute;
+		top: 0;
+		left: 50px;
+	}   
+	
+}
+
+

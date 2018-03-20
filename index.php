@@ -512,15 +512,45 @@ case 'password_reset_empty':
 	public function add_user_control_menu_pages($item , $args){
 		$menu = get_term_by('slug','users-control','nav_menu');
 		if($menu->count === 0){
-			$user_menu_pages = array('Sign in','Register', 'Your Account');
-			foreach($user_menu_pages as $page){
-				$post_obj = get_page_by_title($page);
-				$page_url = get_permalink($post_obj->ID);
-				$item .='<li>';
-				$item .= '<a class="users-menu" href="'.$page_url.'">';
-				$item .=$page;
-				$item .= '</a><li>';
+			$item .='<li><span><i class="fa fa-user-circle"></i><strong>';
+			if ( is_user_logged_in() ) {
+				$current_user = wp_get_current_user();
+				//print_r($current_user);
+				if(!empty($current_user->user_firstname)){
+					$item .= $current_user->user_firstname ;
+				}else{
+					$item .= __('Welcome','user-control').'&nbsp;'.$current_user->user_nicename;
+				}
+				
+			} else {
+				$item .= __('Login','user-control');
 			}
+			$item .= '</strong><i class="fa fa-angle-down"></i></span></li>';
+			$item .= '<li><ul class = "user-dropdown">';
+			$logged_menu_pages = array('Your Account');
+			$none_logged_menu_pages = array('Sign in','Register');
+			if ( is_user_logged_in()) {
+					foreach($logged_menu_pages as $page){
+
+							$post_obj = get_page_by_title($page);
+							$page_url = get_permalink($post_obj->ID);
+							$item .='<li>';
+							$item .= '<a class="users-menu" href="'.$page_url.'">';
+							$item .=$page;
+							$item .= '</a><li>';
+					}
+				}else{
+					foreach($none_logged_menu_pages as $page){
+
+							$post_obj = get_page_by_title($page);
+							$page_url = get_permalink($post_obj->ID);
+							$item .='<li>';
+							$item .= '<a class="users-menu" href="'.$page_url.'">';
+							$item .=$page;
+							$item .= '</a><li>';
+					}
+			}
+			$item .= '</ul></li>';
 			return $item;
 		}
 		return  $item;	
