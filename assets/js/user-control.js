@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
   "use strict";
-$("#user_menu_con li span").click(function(){
+$("#user_menu_con li span").click(function(event){
 	event.stopPropagation();
 	$('.user-dropdown').toggle();
 	var $j  = $(this).find("i");
