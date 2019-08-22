@@ -1,0 +1,7 @@
+#user_nav_con, #user_menu_con li span{
+	flex-direction: row-reverse;
+}
+#user_nav_con{
+	right: auto;
+	left: 50px;
+}
