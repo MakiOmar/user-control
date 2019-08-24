@@ -117,7 +117,7 @@ if(!class_exists('ANONY__User')){
 				$this->errors[] = 'username_exists';
 			}
 
-			if( ( !$this->email_exists && !$this->_force)){
+			if( ( $this->email_exists && !$this->_force)){
 				$this->errors[] = 'email_exists';
 			}
 
