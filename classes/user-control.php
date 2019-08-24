@@ -1,16 +1,17 @@
 <?php
-/*
-Plugin Name: User Control
-Plugin URI: https://prosentra.com
-Description: Adds a user control interface for login, register and forget password 
-Version: 1.0.0
-Author: Mohammad Omar
-Author URI: https://makiomar.com
-Text Domain: user-control
-License: GPL2
-*/
 
 class ANONY__User_Control {
+
+	/**
+	 * @var array User control pagses IDs
+	 */
+	public static $pages_ids = array();
+
+	/**
+	 * @var array User control pagses data
+	 */
+	public static $page_definitions;
+
 	public function __construct() {
 		//Set shortcodes
 		$this->shortcodes = 
@@ -18,8 +19,38 @@ class ANONY__User_Control {
     		'anony_login', 
     		'anony_register', 
     		'anony_password_lost', 
-    		'anony_password_reset'
+    		'anony_password_reset',
+    		'account_info',
     	];
+
+
+    	self::$page_definitions = array(
+			'member-login' => array(
+				'title' => esc_html__( 'Sign In', 'usercontrol' ),
+				'content' => '[anony_login]'
+			),
+
+			'member-account' => array(
+			   'title' => esc_html__( 'Your Account', 'usercontrol' ),
+			   'content' => '[account_info]'
+			),
+
+			ANONY_REG => array(
+				'title' => esc_html__( 'Register', 'usercontrol' ),
+				'content' => '[anony_register]'
+			),
+
+			'member-password-lost' => array(
+				'title' => esc_html__( 'Forgot Your Password?', 'usercontrol' ),
+				'content' => '[anony_password_lost]'
+			),
+
+			'member-password-reset' => array(
+				'title' => esc_html__( 'Pick a New Password', 'usercontrol' ),
+				'content' => '[anony_password_reset]'
+			)
+		);
+
 
 		//Add user control shortcodes
 		$this->shortcodes();
@@ -29,9 +60,6 @@ class ANONY__User_Control {
 
 		//User control form actions
 		$this->form_actions();
-
-
-		add_action( 'init', array( $this, 'restrict_none_admins'));
 		
 		
 		add_filter( 'retrieve_password_message', array( $this, 'replace_retrieve_password_message' ), 10, 4 );
@@ -59,38 +87,41 @@ class ANONY__User_Control {
      */
     public function redirects(){
 
-    	/*------------Login redirect------------------------*/
+    	/*------------Login redirect---------------------------------------------------------------*/
     	$login_redirect = function(){
-    		//$this->redirect_to(ANONY_LOGIN);
+    		$this->redirect_to(ANONY_LOGIN);
     	};
-    	//add_action( 'login_form_login', $login_redirect );
+    	add_action( 'login_form_login', $login_redirect );
 
-    	/*------------Registration redirect-----------------*/
+    	/*------------Registration redirect--------------------------------------------------------*/
     	$reg_redirect = function(){
     		$this->redirect_to(ANONY_REG);
     	};
 		add_action( 'login_form_register', $reg_redirect );
 
-		/*------------Lost password redirect-----------------*/
+		/*------------Lost password redirect-------------------------------------------------------*/
     	$lost_redirect = function(){
     		$this->redirect_to(ANONY_LOST);
     	};
     	add_action( 'login_form_lostpassword', $lost_redirect );
 		
-		/*-------------------Logout redirect-----------------*/
+		/*-------------------Logout redirect--------------------------------------------------------*/
 		$logout_redirect = function(){
 			wp_redirect( home_url( ANONY_LOGIN.'?logged_out=true' ) );
 			exit;
 		};	
     	add_action( 'wp_logout', $logout_redirect );
 
-    	/*------------Reset password redirect-----------------*/
+    	/*------------Reset password redirect-------------------------------------------------------*/
     	add_action( 'login_form_rp', array( $this, 'redirect_password_reset' ) );
 
     	add_action( 'login_form_resetpass', array( $this, 'redirect_password_reset' ) );
 
-    	/*------------authenticate redirect-----------------*/
+    	/*------------authenticate redirect----------------------------------------------------------*/
     	add_filter( 'authenticate', array( $this, 'authenticate_redirect_handling' ), 101, 3 );
+
+    	/*------------Prevent non-admins to access dashboard----------------------------------------------------------*/
+    	add_action( 'init', array( $this, 'restrict_none_admins'));
     }
 
     /**
@@ -135,42 +166,40 @@ class ANONY__User_Control {
     }
 
     /**
+     * Delete pages by IDs.
+     * 
+     * This method will be called upon plugin deactivation
+     */
+    public static function delete_pages(){
+    	//Pages IDs are stored as an option on install
+    	$pages_ids = get_option( 'anony_pages_ids');
+
+    	if(is_array($pages_ids)){
+
+    		foreach ($pages_ids as $id) {
+
+				wp_delete_post( $id, true );
+			}
+    	}
+
+    	delete_option( 'anony_pages_ids' );
+	}
+
+    /**
      * Inserts user control pages with the required shortcodes
      */
- 	public static function control_pages() {
-		$page_definitions = array(
-			'member-login' => array(
-				'title' => esc_html__( 'Sign In', 'usercontrol' ),
-				'content' => '[anony-login-form]'
-			),
-
-			'member-account' => array(
-			   'title' => esc_html__( 'Your Account', 'usercontrol' ),
-			   'content' => '[account-info]'
-			),
-
-			ANONY_REG => array(
-				'title' => esc_html__( 'Register', 'usercontrol' ),
-				'content' => '[anony-register-form]'
-			),
-
-			'member-password-lost' => array(
-				'title' => esc_html__( 'Forgot Your Password?', 'usercontrol' ),
-				'content' => '[anony-password-lost-form]'
-			),
-
-			'member-password-reset' => array(
-				'title' => esc_html__( 'Pick a New Password', 'usercontrol' ),
-				'content' => '[anony-password-reset-form]'
-			)
-		);
-
-	 foreach ( $page_definitions as $slug => $page ) {
+ 	public static function insert_pages() {
+		
+		foreach ( self::$page_definitions as $slug => $page ) {
 			 // Check that the page doesn't exist already
-			$query = new WP_Query( 'pagename=' . $slug );
+			$query = new WP_Query( 
+				[
+					'pagename' => $slug,
+				] 
+			);
 			if ( ! $query->have_posts() ) {
 			   // Add the page using the data from the array above
-			   wp_insert_post(
+			   $user_id = wp_insert_post(
 						array(
 							 'post_content' => $page['content'],
 							 'post_name' => $slug,
@@ -181,8 +210,24 @@ class ANONY__User_Control {
 							 'comment_status' => 'closed',
 						  )
 				);
+				//Store pages IDs for further use
+			   if($user_id !== 0 || !is_wp_error( $user_id )){
+			   		self::$pages_ids[]= $user_id;
+			   }
+			}else{
+
+				foreach (self::$page_definitions as $slug => $info) {
+
+					$page = get_page_by_path($page_slug);
+
+					if ($page) self::$pages_ids[] = $page->ID;
+				}
 			}
-	 }
+		}
+
+		//Add pages IDs to options for further use
+		if(!empty(self::$pages_ids)) update_option( 'anony_pages_ids',self::$pages_ids );
+			
 	}
 
 	/**
@@ -402,8 +447,7 @@ class ANONY__User_Control {
 				$redirect_url = home_url( ANONY_REG );
 
 				if(is_user_logged_in()){
-					$redirect_url = home_url( ANONY_LOGIN );
-					wp_redirect( $redirect_url );
+					wp_redirect( home_url( ANONY_LOGIN ) );
 					exit;
 				}
 
@@ -413,12 +457,23 @@ class ANONY__User_Control {
 
 				} else {
 
-					$email = $_POST['email'];
+					/*$email = $_POST['email'];
 					
 					$user_name = sanitize_text_field( $_POST['user_name'] );
+*/
+					$user = new ANONY__User(
+						[
+							'user_login' => sanitize_text_field( $_POST['user_name'] ), 
+							'user_email' => sanitize_email( $_POST['email'] ),
+						]
+					);
 
-					$result = $this->register_user( $email, $user_name );
+					var_dump($user);
+					die();
+					/*$result = $this->register_user( $email, $user_name );
+
 					$errors = new WP_Error();
+
 					if ( is_wp_error( $result ) ) {
 						// Parse errors into a string and append as parameter to redirect
 						$errors = join( ',', $result->get_error_codes() );
@@ -428,10 +483,12 @@ class ANONY__User_Control {
 						$redirect_url = home_url( ANONY_REG );
 						$redirect_url = add_query_arg( 'registered', $email, $redirect_url );
 					}
+					*/
 				}
 
-				wp_redirect( $redirect_url );
+				/*wp_redirect( $redirect_url );
 				exit;
+				*/
 			}
 	}
 	
@@ -628,10 +685,13 @@ class ANONY__User_Control {
 		return esc_html__( 'An unknown error occurred. Please try again later.', 'usercontrol' );
 	}
 
-	private function register_user( $email, $user_name ) {
+	/*private function register_user( $email, $user_name ) {
 		$errors = new WP_Error();
+
 		if ( ! is_email( $email ) ) {
+
 			$errors->add( 'email', $this->show_error_message( 'email' ) );
+
 			return $errors;
 		}
 		if ( username_exists( $email ) || email_exists( $email ) ) {
@@ -658,7 +718,7 @@ class ANONY__User_Control {
 		
 		wp_mail($email,$subject,$message,$headers);
 		return $user_id;
-	}
+	}*/
 	public function replace_retrieve_password_message( $message, $key, $user_login, $user_data ) {
 		$msg  = esc_html__( 'Hello!', 'usercontrol' ) . "\r\n\r\n";
 		$msg .= sprintf( esc_html__( 'You asked us to reset your password for your account using the email address %s.', 'usercontrol' ), $user_login ) . "\r\n\r\n";
