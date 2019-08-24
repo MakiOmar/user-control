@@ -1,9 +1,23 @@
 <?php
-
+/*
+Plugin Name: User Control
+Plugin URI: https://prosentra.com
+Description: Adds a user control interface for login, register and forget password 
+Version: 1.0.0
+Author: Mohammad Omar
+Author URI: https://makiomar.com
+Text Domain: user-control
+License: GPL2
+*/
 require_once('config.php');
 
 $user_control_login_pages_plugin = new ANONY__User_Control();
-register_activation_hook( __FILE__, array( 'ANONY__User_Control', 'control_pages' ) );
+
+register_activation_hook( __FILE__, array( 'ANONY__User_Control', 'insert_pages' ) );
+
+register_deactivation_hook( __FILE__, array( 'ANONY__User_Control', 'delete_pages' ) );
+
+
 
 function smpg_user_main($location_slug){
 	if ( has_nav_menu( $location_slug ) ) {
