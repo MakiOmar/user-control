@@ -47,6 +47,11 @@ if(!class_exists('ANONY__User')){
 		public $_force;
 
 		/**
+		 * @var array An array of errors codes
+		 */
+		public $errors;
+
+		/**
 		 * Constructor
 		 * @param array $user_data An array of user's data. should be the same struction of $userdata for wp_insert_user
 		 * @param bool  $force     Flage to check wether to force data change
@@ -68,7 +73,12 @@ if(!class_exists('ANONY__User')){
 			extract($user_data);
 
 			//Main data like username and email should be supplied
-			if((!isset($user_login) || empty($user_login)  ) || (!isset($user_email) || empty($user_email))) return;
+			if((!isset($user_login) || empty($user_login)  ) || (!isset($user_email) || empty($user_email))){
+
+				$this->errors[] = 'no-crids';
+
+				return;
+			}
 
 
 			if( $this->email_exists( $user_email )){
@@ -98,7 +108,18 @@ if(!class_exists('ANONY__User')){
 					$this->insert_user();
 				}
 			}
-				
+
+			/**----------------------------------------------------------------------------
+			 * In case of username OR email exists, and no forcing
+			 *---------------------------------------------------------------------------*/
+
+			if( ( $this->username_exists && !$this->_force)){
+				$this->errors[] = 'username_exists';
+			}
+
+			if( ( !$this->email_exists && !$this->_force)){
+				$this->errors[] = 'email_exists';
+			}
 
 
 			/**---------------------------------------------------------------------------
@@ -112,7 +133,9 @@ if(!class_exists('ANONY__User')){
 		 * Inserts new user but won't allow him to choose a password. but will send a password reset link that contains a key that its hash equals the user_activation_key key in the users column. After password reset it sends out a notification of reset.
 		 */
 		public function register_user(){
-			register_new_user( $this->user_data['user_login'], $this->user_data['user_email'] );
+			$user_id = register_new_user( $this->user_data['user_login'], $this->user_data['user_email'] );
+
+			if(is_wp_error( $user_id )) $this->errors[] = 'insertion-faild';
 		}
 
 		/**
@@ -136,6 +159,8 @@ if(!class_exists('ANONY__User')){
 				$this->user_inserted = true;
 			
 				$this->user_crids_notify($user_login, $user_pass, $user_email);
+			}else{
+				$this->errors[] = 'creation-faild';
 			}
 			
 		}
@@ -187,7 +212,11 @@ if(!class_exists('ANONY__User')){
 
 					$user_id = wp_update_user( $user_data );
 					
-					if( !is_wp_error($user_id) ) $this->crids_updated = true;
+					if( !is_wp_error($user_id) ) {
+						$this->crids_updated = true;
+					}else{
+						$this->errors[] = 'email-not-changed';
+					}
 
 				}
 			}
@@ -210,7 +239,11 @@ if(!class_exists('ANONY__User')){
 
 					$user_id =$this->set_user_login($user_data, ['ID' => $this->_user->ID]);
 
-					if($user_id) $this->crids_updated = true;
+					if($user_id) {
+						$this->crids_updated = true;
+					}else{
+						$this->errors[] = 'username-not-changed';
+					}
 				}
 					
 			}
@@ -257,7 +290,11 @@ if(!class_exists('ANONY__User')){
 
 				$user_data['user_pass'] = md5($password);
 			
-				if($this->_wpdb->update($this->_wpdb->users, $user_data, ['ID' => $this->_user->ID])) $this->crids_updated = true;
+				if($this->_wpdb->update($this->_wpdb->users, $user_data, ['ID' => $this->_user->ID])){
+					$this->crids_updated = true;
+				}else{
+					$this->errors[] = 'password-not-changed';
+				}
 
 			}
 		}
