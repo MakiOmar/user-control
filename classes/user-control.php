@@ -333,6 +333,7 @@ class ANONY__User_Control {
 	public function anony_register_form( $attributes, $content = null ) {
 		// Parse shortcode attributes
 		$default_attributes = array( 'show_title' => false );
+
 		$attributes = shortcode_atts( $default_attributes, $attributes );
 
 		if ( is_user_logged_in() ) {
@@ -340,28 +341,16 @@ class ANONY__User_Control {
 		} elseif ( ! get_option( 'users_can_register' ) ) {
 			return esc_html__( 'Registering new users is currently not allowed.', 'usercontrol' );
 		} else {
-			$errors = array();
-			if ( isset( $_REQUEST['register-errors'] ) ) {
-				$error_codes = explode( ',', $_REQUEST['register-errors'] );
 
-				foreach ( $error_codes as $error_code ) {
-					$errors []= $this->show_error_message( $error_code );
-				}
+			$html = $this->action_errors('register');
+
+			if(isset( $_REQUEST['registered'] )) {
+				$html .='<p class="registeration-info">'.sprintf(esc_html__( 'You have successfully registered to <strong>%1s</strong>. We have emailed your password to the email address you entered.And you can login from <a href="%2s">Here</a>', 'usercontrol' ), get_bloginfo( 'name'), wp_login_url()).'</p>';
+    			
 			}
-			if(count ($errors) > 0) { ?>
-			<ul class="registration-errors">
-			<?php foreach($errors as $error){?>
-				<li><?php echo $error ?></li>
-			<?php } ?>
-			</ul>
-			
-		<?php }
-			if(isset( $_REQUEST['registered'] )) { ?>
-				<p class="registeration-info">
-					<?php printf(esc_html__( 'You have successfully registered to <strong>%1s</strong>. We have emailed your password to the email address you entered.And you can login from <a href="%2s">Here</a>', 'usercontrol' ), get_bloginfo( 'name'), wp_login_url());  ?>
-    			</p>
-			<?php }
-			return $this->get_template_html( 'register_form', $attributes );
+			$html .= $this->get_template_html( 'register_form', $attributes );
+
+			return $html;
 		}
 	}
 
@@ -468,27 +457,19 @@ class ANONY__User_Control {
 						]
 					);
 
-					var_dump($user);
-					die();
-					/*$result = $this->register_user( $email, $user_name );
+					if ( !empty( $user->errors ) && is_array($user->errors) ) {
 
-					$errors = new WP_Error();
-
-					if ( is_wp_error( $result ) ) {
 						// Parse errors into a string and append as parameter to redirect
-						$errors = join( ',', $result->get_error_codes() );
-						$redirect_url = add_query_arg( 'register-errors', $errors, $redirect_url );
+						$errors = join( ',', $user->errors );
+						$redirect_url = add_query_arg( 'register', $errors, $redirect_url );
 					} else {
 						// Success, redirect to login page.
-						$redirect_url = home_url( ANONY_REG );
 						$redirect_url = add_query_arg( 'registered', $email, $redirect_url );
 					}
-					*/
 				}
 
-				/*wp_redirect( $redirect_url );
+				wp_redirect( $redirect_url );
 				exit;
-				*/
 			}
 	}
 	
@@ -576,7 +557,7 @@ class ANONY__User_Control {
 		
 		ob_start();
 
-			require( 'templates/' . $template_name . '.php');
+			require( ANONY_CNTRL_PATH . 'templates/' . $template_name . '.php');
 
 			$html = ob_get_contents();
 
@@ -646,19 +627,28 @@ class ANONY__User_Control {
 		switch ( $error_code ) {
 			case 'empty_username':
 				return esc_html__( 'You do have an email address, right?', 'usercontrol' );
+
 			case 'empty_password':
 				return esc_html__( 'You need to enter a password to login.', 'usercontrol' );
+
 			case 'invalid_username':
 				return esc_html__("We don't have any users with that username. Maybe you used a different one when signing up?",'usercontrol');
+
 			case 'incorrect_password':
-				$err = wp_kses(esc_html__("The password you entered wasn't quite right. <a href='%s'>Did you forget your password</a>?",'usercontrol'), array('a' => array('href')));
+				$err = wp_kses(
+							esc_html__("The password you entered wasn't quite right. <a href='%s'>Did you forget your password</a>?",'usercontrol'), 
+							array('a' => array('href'))
+						);
 				return sprintf( $err, wp_lostpassword_url() );
-				// Registration errors
+			// Registration errors
 			case 'email':
 				return esc_html__( 'The email address you entered is not valid.', 'usercontrol' );
 
 			case 'email_exists':
 				return esc_html__( 'An account exists with this email address.', 'usercontrol' );
+
+			case 'username_exists':
+				return esc_html__( 'An account exists with this username.', 'usercontrol' );
 
 			case 'closed':
 				return esc_html__( 'Registering new users is currently not allowed.', 'usercontrol' );
@@ -670,6 +660,7 @@ class ANONY__User_Control {
 			case 'invalid_email':
 			case 'invalidcombo':
 				return esc_html__( 'There are no users registered with this email address.', 'usercontrol' );
+
 			case 'expiredkey':
 			case 'invalidkey':
 				return esc_html__( 'The password reset link you used is not valid anymore.', 'usercontrol' );
@@ -679,10 +670,11 @@ class ANONY__User_Control {
 
 			case 'password_reset_empty':
 				return esc_html__( "Sorry, we don't accept empty passwords.", 'usercontrol' );
+
 			default:
+				return esc_html__( 'An unknown error occurred. Please try again later.', 'usercontrol' );
 			break;
 			}
-		return esc_html__( 'An unknown error occurred. Please try again later.', 'usercontrol' );
 	}
 
 	/*private function register_user( $email, $user_name ) {
