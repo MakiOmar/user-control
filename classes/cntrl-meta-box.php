@@ -1,4 +1,6 @@
 <?php
+if( !defined( 'ABSPATH' ) )
+	die( 'What are you trying to do?' );
 
 if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
 	
@@ -18,39 +20,33 @@ if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
         
         public function nav_menu_link() {
 
+        	global $nav_menu_selected_id;
+
         	$links = 
 				[
-					'login' => 
-						[
-							'title' => esc_html__( 'Log in' ),
-							'url'   => '#ucntrllogin#',
-						],
-					'logout' => 
-						[
-							'title' => esc_html__( 'Log out' ),
-							'url'   => '#ucntrllogout#',
-						],
-					'register' => 
-						[
-							'title' => esc_html__( 'Register' ),
-							'url'   => '#ucntrlregister#',
-						],
-					'login|logout' => 
-						[
-							'title' => esc_html__( 'Log in' ) . '|' . esc_html__( 'Log out' ),
-							'url'   => '#ucntrlloginout#',
-						],
+					'#ucntrllogin#'     => esc_html__( 'Log in' ),
+					'#ucntrllogout#'    => esc_html__( 'Log out' ),
+					'#ucntrlregister#'  => esc_html__( 'Register' ),
+					'#ucntrlloginout#'  => esc_html__( 'Log in' ) . '|' . esc_html__( 'Log out' ),
+
 				];
+
+				$links_obj = array();
+
+				foreach ( $links as $value => $title ) {
+					$links_obj[ $title ] 				= new ANONY__ucntrlogItems();
+					$links_obj[ $title ]->object_id		= esc_attr( $value );
+					$links_obj[ $title ]->title			= esc_attr( $title );
+					$links_obj[ $title ]->url			= esc_attr( $value );
+				}
+
+				$walker = new Walker_Nav_Menu_Checklist( array() );
 
         	?>
         	<div id="posttype-cntrl-user" class="posttypediv">
         		<div id="tabs-panel-cntrl-user" class="tabs-panel tabs-panel-active">
         			<ul id ="cntrl-user-checklist" class="categorychecklist form-no-clear">
-        				<?php
-
-        					echo $this->anony_render_nav_links($links);
-
-        				 ?>
+        				<?php echo walk_nav_menu_tree( array_map( 'wp_setup_nav_menu_item', $links_obj ), 0, (object) array( 'walker' => $walker ) ); ?>
         			</ul>
         		</div>
         		<p class="button-controls">
@@ -64,38 +60,5 @@ if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
         		</p>
         	</div>
         <?php }
-
-        /**
-		 * Renders user control links for nav menu meta box
-		 * @param array $links 
-		 * @return string Rendered list
-		 */
-		public function anony_render_nav_links($links){
-
-			$html = '';
-			$counter = 0;
-			foreach ($links as $link => $data) {
-				$counter++;
-
-				$html .= '<li>';
-
-					$html .= '<label class="menu-item-title">';
-
-					$html .= '<input type="checkbox" class="menu-item-checkbox" name="menu-item[-'.$counter.'][menu-item-object-id]" value="-'.$counter.'">'.$data['title'].'</label>';
-
-					$html .= '<input type="hidden" class="menu-item-type" name="menu-item[-'.$counter.'][menu-item-type]" value="custom">';
-
-					$html .= '<input type="hidden" class="menu-item-title" name="menu-item[-'.$counter.'][menu-item-title]" value="'.$data['title'].'">';
-
-					$html .= '<input type="hidden" class="menu-item-url" name="menu-item[-'.$counter.'][menu-item-url]" value="'.$data['url'].'">';
-
-					$html .= '<input type="hidden" class="menu-item-classes" name="menu-item[-'.$counter.'][menu-item-classes]" value="cntrl-'.str_replace(' ','-',$data['title']).'-pop">';
-
-				$html .= '</li>';
-			}
-
-			return $html;
-		}
-		
 	}
 }
