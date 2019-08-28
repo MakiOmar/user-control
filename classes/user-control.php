@@ -1,4 +1,6 @@
 <?php
+if( !defined( 'ABSPATH' ) )
+	die( 'What are you trying to do?' );
 
 class ANONY__User_Control {
 
@@ -524,7 +526,6 @@ class ANONY__User_Control {
 	 * @return type
 	 */
 	public function do_register_user() {
-
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
 
 				$redirect_url = home_url( ANONY_REG );
@@ -543,7 +544,7 @@ class ANONY__User_Control {
 					/*$email = $_POST['email'];
 					
 					$user_name = sanitize_text_field( $_POST['user_name'] );
-*/
+					*/
 					$user = new ANONY__User(
 						[
 							'user_login' => sanitize_text_field( $_POST['user_name'] ), 

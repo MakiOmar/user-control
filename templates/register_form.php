@@ -1,3 +1,8 @@
+<?php
+if( !defined( 'ABSPATH' ) )
+	die( 'What are you trying to do?' );
+?>
+
 <div id="register-form">
     <?php if ( $attributes['show_title'] ) : ?>
         <h3><?php _e( 'Register', 'user-control' ); ?></h3>

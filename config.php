@@ -7,6 +7,9 @@
  * @link http://makiomar.com
  */
  
+ if( !defined( 'ABSPATH' ) )
+	die( 'What are you trying to do?' );
+
 //Text domain
 define('ANONY_TEXTDOM', 'user-control'); 
 

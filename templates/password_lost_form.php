@@ -1,3 +1,8 @@
+<?php
+if( !defined( 'ABSPATH' ) )
+    die( 'What are you trying to do?' );
+?>
+
 <?php if ( $attributes['show_title'] ) : ?>
 	<h3><?php _e( 'Forgot Your Password?', 'usercontrol' ); ?></h3>
 <?php endif; ?>

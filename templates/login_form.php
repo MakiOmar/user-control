@@ -1,3 +1,8 @@
+<?php
+if( !defined( 'ABSPATH' ) )
+	die( 'What are you trying to do?' );
+?>
+
 <?php if ( $attributes['lost_password_sent'] ) : ?>
     <p class="login-info">
         <?php _e( 'Check your email for a link to reset your password.', 'personalize-login' ); ?>
