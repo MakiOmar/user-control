@@ -34,7 +34,7 @@ if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
 				$links_obj = array();
 
 				foreach ( $links as $value => $title ) {
-					$links_obj[ $title ] 				= new ANONY__ucntrlogItems();
+					$links_obj[ $title ] 				= new ANONY__ucntrlItems();
 					$links_obj[ $title ]->object_id		= esc_attr( $value );
 					$links_obj[ $title ]->title			= esc_attr( $title );
 					$links_obj[ $title ]->url			= esc_attr( $value );
