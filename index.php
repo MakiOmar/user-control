@@ -34,3 +34,9 @@ function smpg_user_main($location_slug){
 				return wp_nav_menu($args);
 	}
 }
+
+
+
+$cntrl_nav = new ANONY__Cntrl_Meta_Box();
+
+add_action('admin_init', array($cntrl_nav, 'add_nav_menu_meta_boxes'));

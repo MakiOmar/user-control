@@ -35,7 +35,7 @@ class ANONY__User_Control {
 			   'content' => '[account_info]'
 			),
 
-			ANONY_REG => array(
+			'member-register' => array(
 				'title' => esc_html__( 'Register', 'usercontrol' ),
 				'content' => '[anony_register]'
 			),
@@ -63,15 +63,109 @@ class ANONY__User_Control {
 		
 		
 		add_filter( 'retrieve_password_message', array( $this, 'replace_retrieve_password_message' ), 10, 4 );
-
-		
 		
 		add_action('wp_enqueue_scripts',array( $this, 'enqueue_scripts'));
 
 		add_action( 'after_setup_theme', array($this, 'user_nav_menu' ) );
 
 		add_filter("wp_nav_menu_user-control_items",array( $this, "add_user_control_menu_pages"),10 , 2);
+
+		//Filter links on frontend
+		add_filter( 'wp_setup_nav_menu_item', array($this, 'setup_nav_menu_item' ));
+
+		/**
+		 * Will filter front end links, so to show registration link, conditionaly, deppending on login condition
+		 */
+		add_filter( 'wp_nav_menu_objects', array( $this,'wp_nav_menu_objects' ));
     }
+
+    /**
+     * Decorates a menu item object with the shared navigation menu item properties.
+     * @param object $item 
+     * @return object The menu item with standard menu item properties.
+     */
+    public function setup_nav_menu_item( $item ){
+
+    	global $pagenow;
+
+		if ( $pagenow != 'nav-menus.php' && ! defined( 'DOING_AJAX' ) && isset( $item->url ) && strstr( $item->url, '#ucntrl' ) != '' ) {
+
+			$item_url = substr( $item->url, 0, strpos( $item->url, '#', 1 ) ) . '#';
+
+			$item_redirect = str_replace( $item_url, '', $item->url );
+
+			if( $item_redirect == '%actualpage%') {
+				$item_redirect = $_SERVER['REQUEST_URI'];
+			}
+			switch ( $item_url ) {
+				case '#ucntrlloginout#' : 	
+										$item_redirect = explode( '|', $item_redirect );
+
+										if ( count( $item_redirect ) != 2 ) {
+											$item_redirect[1] = $item_redirect[0];
+										}
+										for ( $i = 0; $i <= 1; $i++ ) {
+											if ( '%actualpage%' == $item_redirect[ $i ] ) {
+												$item_redirect[ $i ] = $_SERVER['REQUEST_URI'];
+											}
+										}
+										$item->url = is_user_logged_in() ? wp_logout_url( $item_redirect[1] ) : wp_login_url( $item_redirect[0] );
+
+										$item->title = $this->ucntrl_loginout_title( $item->title ) ;
+
+										 break;
+
+
+				case '#ucntrllogin#'    : 	$item->url = esc_url(wp_login_url( $item_redirect )); break;
+
+				case '#ucntrllogout#'   : 	$item->url = esc_url(wp_logout_url( $item_redirect )); break;
+
+				case '#ucntrlregister#' : 	if( is_user_logged_in() ) {
+
+												$item->title = '#ucntrlregister#'; 
+
+											} else {
+
+												$item->url = esc_url(wp_registration_url());
+											}
+
+											$item = apply_filters( 'ucntrlregister_item', $item );
+										break;
+			}
+			$item->url = esc_url( $item->url );
+		}
+
+		return $item;
+    }
+
+    /**
+     * Decides link title for double login|logout link
+     * @param string $title 
+     * @return string Link's title
+     */
+    public function ucntrl_loginout_title($title){
+
+    	$titles = explode( '|', $title );
+
+		if ( ! is_user_logged_in() )
+			return esc_html( isset( $titles[0] ) ? $titles[0] : $title );
+		
+		return esc_html( isset( $titles[1] ) ? $titles[1] : $title );
+    }
+    /**
+     * Unset menu item if its title&url == #bawregister#
+     * 
+     * The #ucntrlregister# will be set to the menu item if the user is looged in, so we then un set it if user is logged in. Check method (ucntrl_setup_nav_menu_item)
+     * @param array $sorted_menu_items 
+     * @return array Filered array of menu items objects
+     */
+	function wp_nav_menu_objects( $sorted_menu_items ) {
+		foreach ( $sorted_menu_items as $k => $item ) {
+			if ( $item->title==$item->url && '#ucntrlregister#' == $item->title )
+				unset( $sorted_menu_items[ $k ] );
+		}
+		return $sorted_menu_items;
+	}
 
     /**
      * Add user control shortcodes
@@ -91,7 +185,7 @@ class ANONY__User_Control {
     	$login_redirect = function(){
     		$this->redirect_to(ANONY_LOGIN);
     	};
-    	add_action( 'login_form_login', $login_redirect );
+    	//add_action( 'login_form_login', $login_redirect );
 
     	/*------------Registration redirect--------------------------------------------------------*/
     	$reg_redirect = function(){
@@ -722,34 +816,6 @@ class ANONY__User_Control {
 		return $msg;
 	}
 	
-	public function enqueue_scripts() {
-		$script = 'user-control';
-
-		wp_enqueue_style(
-			$script, 
-			ANONY_CNTRL_URI.('assets/css/'.$script.'.css'),
-			'',
-			filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/css/'.$script.'.css'))
-		);
-
-		if(is_rtl()){
-			wp_enqueue_style( 
-				$script.'-rtl', 
-				ANONY_CNTRL_URI.'assets/css/'.$script.'-rtl'.'.css',
-				'',
-				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/css/'.$script.'-rtl'.'.css'))
-			);
-		}
-
-		wp_enqueue_script( 
-			$script, 
-			ANONY_CNTRL_URI.'assets/js/'.$script.'.js',
-			array('jquery'),
-			filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/js/'.$script.'.js')),
-			true
-		);
-	}
-
 	public function user_nav_menu(){
 		$menus= array(
 			'user-control'=>esc_html__('User control menu','user-control'),
@@ -820,4 +886,44 @@ class ANONY__User_Control {
 		}
 		return  $item;	
 	}
+
+	/**
+	 * Enqueue scripts
+	 */
+	public function enqueue_scripts() {
+
+		$styles = ['user-control', 'font-awesome.min'];
+
+		foreach ($styles as $style) {
+			wp_enqueue_style(
+				$style, 
+				ANONY_CNTRL_URI.('assets/css/'.$style.'.css'),
+				'',
+				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/css/'.$style.'.css'))
+			);
+		}
+
+		if(is_rtl()){
+			wp_enqueue_style( 
+				'user-control-rtl', 
+				ANONY_CNTRL_URI.'assets/css/user-control-rtl.css',
+				'',
+				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/css/user-control-rtl.css'))
+			);
+		}
+
+		$scripts = ['user-control'];
+
+		foreach ($scripts as $script) {
+			wp_enqueue_script( 
+				$script, 
+				ANONY_CNTRL_URI.'assets/js/'.$script.'.js',
+				array('jquery'),
+				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/js/'.$script.'.js')),
+				true
+			);
+		}
+		
+	}
+
 }
