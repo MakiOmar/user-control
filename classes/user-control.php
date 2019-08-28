@@ -120,7 +120,16 @@ class ANONY__User_Control {
 
 				case '#ucntrllogin#'    : 	$item->url = esc_url(wp_login_url( $item_redirect )); break;
 
-				case '#ucntrllogout#'   : 	$item->url = esc_url(wp_logout_url( $item_redirect )); break;
+				case '#ucntrllogout#'   : 	if(is_user_logged_in()){
+
+												$item->url = esc_url(wp_logout_url( $item_redirect )); 
+											}else{
+
+												$item->title = '#ucntrllogout#';
+											}
+
+											$item = apply_filters( 'ucntrllogout_item', $item );
+										break;
 
 				case '#ucntrlregister#' : 	if( is_user_logged_in() ) {
 
@@ -163,9 +172,11 @@ class ANONY__User_Control {
      */
 	function wp_nav_menu_objects( $sorted_menu_items ) {
 		foreach ( $sorted_menu_items as $k => $item ) {
-			if ( $item->title==$item->url && '#ucntrlregister#' == $item->title )
+			if ( ($item->title==$item->url && '#ucntrlregister#' == $item->title ) || ($item->title==$item->url && '#ucntrllogout#' == $item->title ) )
 				unset( $sorted_menu_items[ $k ] );
 		}
+
+		
 		return $sorted_menu_items;
 	}
 
@@ -187,7 +198,7 @@ class ANONY__User_Control {
     	$login_redirect = function(){
     		$this->redirect_to(ANONY_LOGIN);
     	};
-    	//add_action( 'login_form_login', $login_redirect );
+    	add_action( 'login_form_login', $login_redirect );
 
     	/*------------Registration redirect--------------------------------------------------------*/
     	$reg_redirect = function(){
