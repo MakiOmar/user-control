@@ -19,14 +19,17 @@ define('ANONY_CNTRL_PATH', plugin_dir_path( __FILE__ ));
 //Plugin URI
 define('ANONY_CNTRL_URI', plugin_dir_url( __FILE__ ));
 
+//Menu slug
+define('ANONY_MENU', 'anony-user-control');
+
 //Login page slug
-define('ANONY_LOGIN', 'member-login');
+define('ANONY_LOGIN', 'anony-login');
 
 //Registration page slug
-define('ANONY_REG', 'member-register');
+define('ANONY_REG', 'anony-register');
  
 //Lost password page slug
-define('ANONY_LOST', 'member-password-lost');
+define('ANONY_LOST', 'anony-password-lost');
 
 //Lost password page slug
 define('ANONY_CNTRL', wp_normalize_path( plugin_dir_path(__FILE__).'classes/' ));

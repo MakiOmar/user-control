@@ -3,14 +3,19 @@ if( !defined( 'ABSPATH' ) )
 	die( 'What are you trying to do?' );
 
 if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
-	
+	/**
+	 * Add user metabox to menus page
+	 */
 	class ANONY__Cntrl_Meta_Box{
 
+		/**
+		 * Add metbox
+		 */
 		public function add_nav_menu_meta_boxes() {
 
         	add_meta_box(
         		'anony_cntrl_link',
-        		__('User control'),
+        		esc_html__('User control', ANONY_TEXTDOM),
         		array( $this, 'nav_menu_link'),
         		'nav-menus',
         		'side',
@@ -18,6 +23,9 @@ if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
         	);
         }
         
+        /**
+         * Render mentbox links
+         */
         public function nav_menu_link() {
 
         	global $nav_menu_selected_id;
@@ -54,7 +62,7 @@ if( ! class_exists( 'ANONY__Cntrl_Meta_Box' )){
         				<a href="/wordpress/wp-admin/nav-menus.php?page-tab=all&amp;selectall=1#posttype-cntrl-user" class="select-all"><?php esc_html_e( 'Select all' ) ?></a>
         			</span>
         			<span class="add-to-menu">
-        				<input type="submit" class="button-secondary submit-add-to-menu right" value="Add to Menu" name="add-post-type-menu-item" id="submit-posttype-cntrl-user">
+        				<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' , ANONY_TEXTDOM); ?>" name="add-post-type-menu-item" id="submit-posttype-cntrl-user">
         				<span class="spinner"></span>
         			</span>
         		</p>

@@ -1,7 +1,9 @@
 <?php
 if( !defined( 'ABSPATH' ) )
 	die( 'What are you trying to do?' );
-
+/**
+ * Menu items object
+ */
 class ANONY__ucntrlItems {
 	public $db_id = 0;
 	public $object = 'ucntritems';

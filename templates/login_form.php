@@ -17,7 +17,7 @@ if( !defined( 'ABSPATH' ) )
 
  <div class="grid-col widgeted">
 	 <div id="usercontrol" class="user-control">
-			<p class="hint"><?php esc_html_e('Enter your credintals', 'usercontrol') ?></p>
+			<p class="hint"><?php esc_html_e('Enter your credintals', ANONY_TEXTDOM) ?></p>
 
 			<form id="login" class="user-control-form" method="post" action="<?php echo wp_login_url(); ?>">
 

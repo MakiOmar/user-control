@@ -15,8 +15,7 @@ $user_control_login_pages_plugin = new ANONY__User_Control();
 
 register_activation_hook( __FILE__, array( 'ANONY__User_Control', 'insert_pages' ) );
 
-register_deactivation_hook( __FILE__, array( 'ANONY__User_Control', 'delete_pages' ) );
-
+register_deactivation_hook( __FILE__, array( 'ANONY__User_Control', 'deactivated' ) );
 
 
 function smpg_user_main($location_slug){
