@@ -1,0 +1,314 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: User Control\n"
+"POT-Creation-Date: 2020-03-10 20:11+0300\n"
+"PO-Revision-Date: 2020-03-10 20:18+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: index.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: classes/uc-meta-box.php:18 classes/user-control.php:954
+msgid "User control"
+msgstr "تحكم المستخدم"
+
+#: classes/uc-meta-box.php:35 classes/uc-meta-box.php:38
+#: classes/user-control.php:31 classes/user-control.php:891
+msgid "Log in"
+msgstr "تسجيل الدخول"
+
+#: classes/uc-meta-box.php:36 classes/uc-meta-box.php:38
+#: classes/user-control.php:904
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+#: classes/uc-meta-box.php:37 classes/user-control.php:41
+#: templates/login_form.php:32 templates/register_form.php:8
+#: templates/register_form.php:19
+msgid "Register"
+msgstr "فتح حساب"
+
+#: classes/uc-meta-box.php:62
+msgid "Select all"
+msgstr "حدد الكل"
+
+#: classes/uc-meta-box.php:65
+msgid "Add to Menu"
+msgstr "أضف للقائمة"
+
+#: classes/user-control.php:36
+msgid "Profile"
+msgstr "الملف الشخصي"
+
+#: classes/user-control.php:46 templates/password_lost_form.php:7
+msgid "Forgot Your Password?"
+msgstr "هل نسيت كلمة المرور؟"
+
+#: classes/user-control.php:51 templates/password_reset_form.php:8
+msgid "Pick a New Password"
+msgstr "احصل على كلمة سر جديدة"
+
+#: classes/user-control.php:357
+msgid "You have signed out. Would you like to sign in again?"
+msgstr "لقد قمت بتسجيل الخروج. هل تريد الدخول مجدداً؟"
+
+#: classes/user-control.php:379
+msgid "You have to log in to control your account"
+msgstr "يجب عليك تسيل الدخول لتتحكم بحسابك"
+
+#: classes/user-control.php:412
+msgid "Sign In"
+msgstr "تسجيل الدخول"
+
+#: classes/user-control.php:447 classes/user-control.php:483
+#: classes/user-control.php:504
+msgid "You are already signed in."
+msgstr "أنت مسجل الدخول فعلياً."
+
+#: classes/user-control.php:449 classes/user-control.php:760
+msgid "Registering new users is currently not allowed."
+msgstr "تسجيل مستخدمين جدد غير مسموح حالياً."
+
+#: classes/user-control.php:455
+#, php-format
+msgid ""
+"You have successfully registered to <strong>%1s</strong>. We have emailed "
+"your password to the email address you entered.And you can login from <a "
+"href=\"%2s\">Here</a>"
+msgstr ""
+"تم تسيلك بنجاح في <strong>%1s</strong>. لقد قمنا بإرسال بريد إلكتروني به "
+"كلمة المرور الخاصة بك للبريد الذي قمت بإدخاله. يمكن تسجب الدخول من <a href="
+"\"%2s\">هنا</a>"
+
+#: classes/user-control.php:527
+msgid "Invalid password reset link."
+msgstr "رابط استعادة كلمة المرور غير صالح."
+
+#: classes/user-control.php:735
+msgid "You do have an email address, right?"
+msgstr "لديك بريد إلكتروني، أليس هذه صحيح؟"
+
+#: classes/user-control.php:738
+msgid "You need to enter a password to login."
+msgstr "يب عيك إدخال كلمة المرور لكي تتمكن من الدخول."
+
+#: classes/user-control.php:741
+msgid ""
+"We don't have any users with that username. Maybe you used a different one "
+"when signing up?"
+msgstr "لايوجد لدينا اسم مسخدم كهذا، ربما استخدمت اسماً آخر عند فتح الحساب؟"
+
+#: classes/user-control.php:745
+#, php-format
+msgid ""
+"The password you entered wasn't quite right. <a href='%s'>Did you forget "
+"your password</a>?"
+msgstr "كلمت المرور المستخدمة غير صحيحة. <a href='%s'>هل نسيت كلمة المرور</a>؟"
+
+#: classes/user-control.php:751
+msgid "The email address you entered is not valid."
+msgstr "البريد الإلكتروني المدخل غير صالح."
+
+#: classes/user-control.php:754
+msgid "An account exists with this email address."
+msgstr "يوجد حساب فعلاً بنفس البريد الإلكتروني."
+
+#: classes/user-control.php:757
+msgid "An account exists with this username."
+msgstr "يوجد حساب فعلاً بنفس إسم المستخدم."
+
+#: classes/user-control.php:764
+msgid "You need to enter your email address to continue."
+msgstr "يجب عليك ادخال بريدك الإلكتروني للاستمرار."
+
+#: classes/user-control.php:768
+msgid "There are no users registered with this email address."
+msgstr "البريد الإلكتروني غير موجود في قائمة المستخدمين المسجلين."
+
+#: classes/user-control.php:772
+msgid "The password reset link you used is not valid anymore."
+msgstr "رابط إعادة ضبط كلمة المرور لم يعد صالح بعد."
+
+#: classes/user-control.php:775
+msgid "Password and password confirmation don't match."
+msgstr "كلمة المرور وتأكيد كلمة المرور غير مطابقتين."
+
+#: classes/user-control.php:778
+msgid "Sorry, we don't accept empty passwords."
+msgstr "عفو!، لايمكنك استخدام كلمة مرور خالية."
+
+#: classes/user-control.php:781
+msgid "An unknown error occurred. Please try again later."
+msgstr "حدث خطأ غير معروف. فضلاً قم بالمحاولة مرة أخرى."
+
+#: classes/user-control.php:822
+msgid "Hello!"
+msgstr "مرحباً!"
+
+#: classes/user-control.php:823
+#, php-format
+msgid ""
+"You asked us to reset your password for your account using the email address "
+"%s."
+msgstr ""
+"لقد طلبت منا إعادة ضبط كلمة المرور للحساب المرتبط بالبريد الإلكتروني %s."
+
+#: classes/user-control.php:824
+msgid ""
+"If this was a mistake, or you didn't ask for a password reset, just ignore "
+"this email and nothing will happen."
+msgstr ""
+"إذا كان هذا عن طريق الخطأ، أو أنك لم تقم بطلب ذلك، فقط تاهل هذه الرسالة ولن "
+"يحدث شيء."
+
+#: classes/user-control.php:825
+msgid "To reset your password, visit the following address:"
+msgstr "لإعادة ضبط كلمة المرور ، قم بزيارة الرابط التالي:"
+
+#: classes/user-control.php:827
+msgid "Thanks!"
+msgstr "شكراً لك!"
+
+#: classes/user-control.php:856
+msgid "User control plugin menu"
+msgstr "قائمة الملاحة لإضافة تحكم المستخدم"
+
+#: classes/user-control.php:886
+msgid "Welcome"
+msgstr "مرحباً"
+
+#: classes/user.php:157
+msgid "You didn't choose your password"
+msgstr "لم تقم بتحديد كلمة المرور"
+
+#: classes/user.php:273
+msgid "User"
+msgstr "مستخدم"
+
+#: classes/user.php:329
+#, php-format
+msgid "Your login credintals for %s"
+msgstr "معلومات الدخول للحساب %s"
+
+#: classes/user.php:334
+#, php-format
+msgid "Thank you %1$s for registering to our website %2$s"
+msgstr "شكراً لك %1$s لتسجيلك في موقعنا %2$s"
+
+#: classes/user.php:339
+msgid "You login information is:"
+msgstr "معلومات دخولك هي:"
+
+#: classes/user.php:342
+#, php-format
+msgid "Username: %s"
+msgstr "إسم المستخدم: %s"
+
+#: classes/user.php:347
+#, php-format
+msgid "Password: %s"
+msgstr "كلمة المرور: %s"
+
+#: classes/user.php:351
+msgid "To log into your account please use the following address "
+msgstr "للدخول إلى حسابك ، قم بزيارة الرابط التالي "
+
+#: templates/login_form.php:8
+msgid "A reset password link has been sent to your email."
+msgstr "تم إرسال رابط إعادة ضبط كلمة المرور إلى بريدك الإلكتروني."
+
+#: templates/login_form.php:14
+msgid "Your password has been changed. You can sign in now."
+msgstr "تم تغيير كلمة المرور الخاصة بك. يمكنك الآن تسيل الدخول."
+
+#: templates/login_form.php:20
+msgid "Enter your credintals"
+msgstr "أضف معلومات الدخول لحسابك"
+
+#: templates/login_form.php:24 templates/password_lost_form.php:15
+#: templates/register_form.php:12
+msgid "&#xf090; Email Adress"
+msgstr "&#xf090; البريد الإلكتروني"
+
+#: templates/login_form.php:26
+msgid "&#xf09c; Password"
+msgstr "&#xf09c; كلمة المرور"
+
+#: templates/login_form.php:28
+msgid "Remember Me"
+msgstr "تذكرني"
+
+#: templates/login_form.php:30
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#: templates/login_form.php:33
+msgid "Forgot your password?"
+msgstr "هل نسيت كلمة المرور؟"
+
+#: templates/password_lost_form.php:10
+msgid ""
+"Enter your email address and we'll send you a link you can use to pick a new "
+"password."
+msgstr ""
+"أضف بريدك الإلكتروني، وسنرسل لك رابط يمكنك من خلاله إعادة ضبط كلمة المرور."
+
+#: templates/password_lost_form.php:14
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: templates/password_lost_form.php:19 templates/password_reset_form.php:27
+msgid "Reset Password"
+msgstr "إعادة ضبط كلمة المرور"
+
+#: templates/password_reset_form.php:16
+msgid "New password"
+msgstr "كلمة المرور الجديدة"
+
+#: templates/password_reset_form.php:20
+msgid "Repeat new password"
+msgstr "أعد كتابة كلمة المرور"
+
+#: templates/register_form.php:13
+msgid "&#xf007; Username"
+msgstr "&#xf007; إسم المستخدم"
+
+#: templates/register_form.php:16
+msgid ""
+"Note: Your password will be generated automatically and sent to your email "
+"address."
+msgstr "ملحوظة: كلمة المرور يتم توليدها تلقائياً وإرسالها إلى بريدك الإلكتروني."
+
+#. Plugin Name of the plugin/theme
+msgid "User Control"
+msgstr "تحكم المستخدم"
+
+#. Plugin URI of the plugin/theme
+msgid "https://prosentra.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Adds a user control interface for login, register and forget password"
+msgstr "تقوم بإضافة واجهة مستخدم أمامية للتحكم في حساب المستخدم"
+
+#. Author of the plugin/theme
+msgid "Mohammad Omar"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://makiomar.com"
+msgstr ""

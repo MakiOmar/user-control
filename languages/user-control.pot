@@ -1,0 +1,306 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: User Control\n"
+"POT-Creation-Date: 2020-03-10 20:11+0300\n"
+"PO-Revision-Date: 2020-03-10 19:35+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: index.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: classes/uc-meta-box.php:18 classes/user-control.php:954
+msgid "User control"
+msgstr ""
+
+#: classes/uc-meta-box.php:35 classes/uc-meta-box.php:38
+#: classes/user-control.php:31 classes/user-control.php:891
+msgid "Log in"
+msgstr ""
+
+#: classes/uc-meta-box.php:36 classes/uc-meta-box.php:38
+#: classes/user-control.php:904
+msgid "Log out"
+msgstr ""
+
+#: classes/uc-meta-box.php:37 classes/user-control.php:41
+#: templates/login_form.php:32 templates/register_form.php:8
+#: templates/register_form.php:19
+msgid "Register"
+msgstr ""
+
+#: classes/uc-meta-box.php:62
+msgid "Select all"
+msgstr ""
+
+#: classes/uc-meta-box.php:65
+msgid "Add to Menu"
+msgstr ""
+
+#: classes/user-control.php:36
+msgid "Profile"
+msgstr ""
+
+#: classes/user-control.php:46 templates/password_lost_form.php:7
+msgid "Forgot Your Password?"
+msgstr ""
+
+#: classes/user-control.php:51 templates/password_reset_form.php:8
+msgid "Pick a New Password"
+msgstr ""
+
+#: classes/user-control.php:357
+msgid "You have signed out. Would you like to sign in again?"
+msgstr ""
+
+#: classes/user-control.php:379
+msgid "You have to log in to control your account"
+msgstr ""
+
+#: classes/user-control.php:412
+msgid "Sign In"
+msgstr ""
+
+#: classes/user-control.php:447 classes/user-control.php:483
+#: classes/user-control.php:504
+msgid "You are already signed in."
+msgstr ""
+
+#: classes/user-control.php:449 classes/user-control.php:760
+msgid "Registering new users is currently not allowed."
+msgstr ""
+
+#: classes/user-control.php:455
+#, php-format
+msgid ""
+"You have successfully registered to <strong>%1s</strong>. We have emailed "
+"your password to the email address you entered.And you can login from <a "
+"href=\"%2s\">Here</a>"
+msgstr ""
+
+#: classes/user-control.php:527
+msgid "Invalid password reset link."
+msgstr ""
+
+#: classes/user-control.php:735
+msgid "You do have an email address, right?"
+msgstr ""
+
+#: classes/user-control.php:738
+msgid "You need to enter a password to login."
+msgstr ""
+
+#: classes/user-control.php:741
+msgid ""
+"We don't have any users with that username. Maybe you used a different one "
+"when signing up?"
+msgstr ""
+
+#: classes/user-control.php:745
+#, php-format
+msgid ""
+"The password you entered wasn't quite right. <a href='%s'>Did you forget "
+"your password</a>?"
+msgstr ""
+
+#: classes/user-control.php:751
+msgid "The email address you entered is not valid."
+msgstr ""
+
+#: classes/user-control.php:754
+msgid "An account exists with this email address."
+msgstr ""
+
+#: classes/user-control.php:757
+msgid "An account exists with this username."
+msgstr ""
+
+#: classes/user-control.php:764
+msgid "You need to enter your email address to continue."
+msgstr ""
+
+#: classes/user-control.php:768
+msgid "There are no users registered with this email address."
+msgstr ""
+
+#: classes/user-control.php:772
+msgid "The password reset link you used is not valid anymore."
+msgstr ""
+
+#: classes/user-control.php:775
+msgid "Password and password confirmation don't match."
+msgstr ""
+
+#: classes/user-control.php:778
+msgid "Sorry, we don't accept empty passwords."
+msgstr ""
+
+#: classes/user-control.php:781
+msgid "An unknown error occurred. Please try again later."
+msgstr ""
+
+#: classes/user-control.php:822
+msgid "Hello!"
+msgstr ""
+
+#: classes/user-control.php:823
+#, php-format
+msgid ""
+"You asked us to reset your password for your account using the email address "
+"%s."
+msgstr ""
+
+#: classes/user-control.php:824
+msgid ""
+"If this was a mistake, or you didn't ask for a password reset, just ignore "
+"this email and nothing will happen."
+msgstr ""
+
+#: classes/user-control.php:825
+msgid "To reset your password, visit the following address:"
+msgstr ""
+
+#: classes/user-control.php:827
+msgid "Thanks!"
+msgstr ""
+
+#: classes/user-control.php:856
+msgid "User control plugin menu"
+msgstr ""
+
+#: classes/user-control.php:886
+msgid "Welcome"
+msgstr ""
+
+#: classes/user.php:157
+msgid "You didn't choose your password"
+msgstr ""
+
+#: classes/user.php:273
+msgid "User"
+msgstr ""
+
+#: classes/user.php:329
+#, php-format
+msgid "Your login credintals for %s"
+msgstr ""
+
+#: classes/user.php:334
+#, php-format
+msgid "Thank you %1$s for registering to our website %2$s"
+msgstr ""
+
+#: classes/user.php:339
+msgid "You login information is:"
+msgstr ""
+
+#: classes/user.php:342
+#, php-format
+msgid "Username: %s"
+msgstr ""
+
+#: classes/user.php:347
+#, php-format
+msgid "Password: %s"
+msgstr ""
+
+#: classes/user.php:351
+msgid "To log into your account please use the following address "
+msgstr ""
+
+#: templates/login_form.php:8
+msgid "A reset password link has been sent to your email."
+msgstr ""
+
+#: templates/login_form.php:14
+msgid "Your password has been changed. You can sign in now."
+msgstr ""
+
+#: templates/login_form.php:20
+msgid "Enter your credintals"
+msgstr ""
+
+#: templates/login_form.php:24 templates/password_lost_form.php:15
+#: templates/register_form.php:12
+msgid "&#xf090; Email Adress"
+msgstr ""
+
+#: templates/login_form.php:26
+msgid "&#xf09c; Password"
+msgstr ""
+
+#: templates/login_form.php:28
+msgid "Remember Me"
+msgstr ""
+
+#: templates/login_form.php:30
+msgid "Login"
+msgstr ""
+
+#: templates/login_form.php:33
+msgid "Forgot your password?"
+msgstr ""
+
+#: templates/password_lost_form.php:10
+msgid ""
+"Enter your email address and we'll send you a link you can use to pick a new "
+"password."
+msgstr ""
+
+#: templates/password_lost_form.php:14
+msgid "Email"
+msgstr ""
+
+#: templates/password_lost_form.php:19 templates/password_reset_form.php:27
+msgid "Reset Password"
+msgstr ""
+
+#: templates/password_reset_form.php:16
+msgid "New password"
+msgstr ""
+
+#: templates/password_reset_form.php:20
+msgid "Repeat new password"
+msgstr ""
+
+#: templates/register_form.php:13
+msgid "&#xf007; Username"
+msgstr ""
+
+#: templates/register_form.php:16
+msgid ""
+"Note: Your password will be generated automatically and sent to your email "
+"address."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "User Control"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://prosentra.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Adds a user control interface for login, register and forget password"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Mohammad Omar"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://makiomar.com"
+msgstr ""

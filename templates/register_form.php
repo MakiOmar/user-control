@@ -16,7 +16,7 @@ if( !defined( 'ABSPATH' ) )
 			<?php _e( 'Note: Your password will be generated automatically and sent to your email address.', 'user-control' ); ?>
 		   </p>
 		   <p class="signup-submit">
-				<button type="submit" name="submit" class="smpg-button" form="signupform"><?php _e( 'Register', 'user-control' ); ?></button>
+				<button type="submit" name="submit" class="anony-uc-button" form="signupform"><?php _e( 'Register', 'user-control' ); ?></button>
 		  </p>
 		  </form>
 	  </div>

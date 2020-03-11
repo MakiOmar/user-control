@@ -154,7 +154,7 @@ if(!class_exists('ANONY__User')){
 			extract($this->user_data);
 			
 			if(!isset($this->user_data['user_pass']) || empty($this->user_data['user_pass'])) 
-				return new WP_Error('password_required', esc_html__('You didn\'t choose your password', ANONY_TEXTDOM));
+				return new WP_Error('password_required', esc_html__('You didn\'t choose your password', ANONY_UC_TEXTDOM));
 									
 			$user = wp_insert_user( $this->user_data );
 
@@ -270,7 +270,7 @@ if(!class_exists('ANONY__User')){
 			//Make sure display name to be not the same as user_login
 			if(!isset($user_data['first_name'])   && !isset($user_data['last_name']))
 
-				$user_data['display_name'] = sanitize_title(esc_html__( 'User' , ANONY_TEXTDOM));
+				$user_data['display_name'] = sanitize_title(esc_html__( 'User' , ANONY_UC_TEXTDOM));
 
 			//Use $this->_wpdb->update because wp_update_user won't update user_login
 			//$this->_wpdb->update returns false on failure or number of rows affected on success
@@ -326,29 +326,29 @@ if(!class_exists('ANONY__User')){
 			$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 			
 			$subject = sprintf(
-						esc_html__('Your login credintals for %s',ANONY_TEXTDOM), 
+						esc_html__('Your login credintals for %s',ANONY_UC_TEXTDOM), 
 						$blogname
 					);
 			
 			$message= sprintf(
-						esc_html__('Thank you %1$s for registering to our blog %2$s',ANONY_TEXTDOM), 
+						esc_html__('Thank you %1$s for registering to our website %2$s',ANONY_UC_TEXTDOM), 
 						$username, 
 						$blogname
 					). "\n\n";
 			
-			$message.=esc_html__('You login information is:',ANONY_TEXTDOM) . "\n\n";
+			$message.=esc_html__('You login information is:',ANONY_UC_TEXTDOM) . "\n\n";
 			
 			$message.= sprintf(
-						esc_html__('Username: %s',ANONY_TEXTDOM), 
+						esc_html__('Username: %s',ANONY_UC_TEXTDOM), 
 						$username
 					) . "\n\n";
 			
 			$message.=sprintf(
-						esc_html__('Password: %s',ANONY_TEXTDOM), 
+						esc_html__('Password: %s',ANONY_UC_TEXTDOM), 
 						$password
 					) . "\n";
 			
-			$message.= esc_html__('To log into the admin area please us the following address ',ANONY_TEXTDOM) .home_url('/') . "\n";
+			$message.= esc_html__('To log into your account please use the following address ',ANONY_UC_TEXTDOM) .get_home_url() . "\n";
 
 			$headers  = "From: " . sanitize_email(get_bloginfo('admin_email')) . "\n";
 			$headers .= "MIME-Version: 1.0\r\n";

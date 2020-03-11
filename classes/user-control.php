@@ -43,12 +43,12 @@ class ANONY__User_Control {
 			),
 
 			'anony-password-lost' => array(
-				'title' => esc_html__( 'Forgot Your Password?', ANONY_TEXTDOM ),
+				'title' => esc_html__( 'Forgot Your Password?', ANONY_UC_TEXTDOM ),
 				'content' => '[anony_password_lost]'
 			),
 
 			'anony-password-reset' => array(
-				'title' => esc_html__( 'Pick a New Password', ANONY_TEXTDOM ),
+				'title' => esc_html__( 'Pick a New Password', ANONY_UC_TEXTDOM ),
 				'content' => '[anony_password_reset]'
 			)
 		);
@@ -354,7 +354,7 @@ class ANONY__User_Control {
 		// Check if user just logged out
 		if ( isset( $_REQUEST['logged_out'] ) && $_REQUEST['logged_out'] == true ){
 			$html .= '<p class="login-info">';
-			$html .= esc_html__( 'You have signed out. Would you like to sign in again?', ANONY_TEXTDOM );
+			$html .= esc_html__( 'You have signed out. Would you like to sign in again?', ANONY_UC_TEXTDOM );
 			$html .= '</p>';
 		}
 
@@ -364,6 +364,24 @@ class ANONY__User_Control {
 	/**------------------------------------------------------------------
 	 * Rendering
 	 *-----------------------------------------------------------------*/
+
+	/**
+	 * Account info form shortcode function
+	 * @param  array  $attributes shortcode attributes
+	 * @param  string $content    shortcode content 
+	 * @return string             Rendered account info
+	 */
+	public function account_info_form( $attributes, $content = null ) {
+		$html = '';
+
+		if (!is_user_logged_in()){
+
+			return esc_html__( 'You have to log in to control your account', ANONY_UC_TEXTDOM );
+		}
+
+		//Note that the function called by the shortcode should never produce output of any kind.
+		return apply_filters( 'account_info_form', $html);
+	}
 
 	/**
 	 * Login form shortcode function
@@ -391,12 +409,12 @@ class ANONY__User_Control {
 
 		$html = '';
 
-		if ( $attributes['show_title'] == 'show') $html .= '<h1>'.esc_html__( 'Sign In', ANONY_TEXTDOM ).'</h1>';
+		if ( $attributes['show_title'] == 'show') $html .= '<h1>'.esc_html__( 'Sign In', ANONY_UC_TEXTDOM ).'</h1>';
 		
 		
 		if (is_user_logged_in()){
 
-		 $html .= "<p>You are already logged in</p>";
+		 $html .= "<p>".esc_html__( 'You are already signed in.', ANONY_UC_TEXTDOM )."</p>";
 		}else{
 
 			//Add login errors if there are any
@@ -426,15 +444,15 @@ class ANONY__User_Control {
 		$attributes = shortcode_atts( $default_attributes, $attributes );
 
 		if ( is_user_logged_in() ) {
-			return esc_html__( 'You are already signed in.', ANONY_TEXTDOM );
+			return esc_html__( 'You are already signed in.', ANONY_UC_TEXTDOM );
 		} elseif ( ! get_option( 'users_can_register' ) ) {
-			return esc_html__( 'Registering new users is currently not allowed.', ANONY_TEXTDOM );
+			return esc_html__( 'Registering new users is currently not allowed.', ANONY_UC_TEXTDOM );
 		} else {
 
 			$html = $this->action_errors('register');
 
 			if(isset( $_REQUEST['registered'] )) {
-				$html .='<p class="registeration-info">'.sprintf(esc_html__( 'You have successfully registered to <strong>%1s</strong>. We have emailed your password to the email address you entered.And you can login from <a href="%2s">Here</a>', ANONY_TEXTDOM ), get_bloginfo( 'name'), wp_login_url()).'</p>';
+				$html .='<p class="registeration-info">'.sprintf(esc_html__( 'You have successfully registered to <strong>%1s</strong>. We have emailed your password to the email address you entered.And you can login from <a href="%2s">Here</a>', ANONY_UC_TEXTDOM ), get_bloginfo( 'name'), wp_login_url()).'</p>';
     			
 			}
 			$html .= $this->get_template_html( 'register_form', $attributes );
@@ -462,7 +480,7 @@ class ANONY__User_Control {
 		}
 
 		if ( is_user_logged_in() ) {
-			return esc_html__( 'You are already signed in.', ANONY_TEXTDOM );
+			return esc_html__( 'You are already signed in.', ANONY_UC_TEXTDOM );
 		} else {
 			if ( count( $attributes['errors'] ) > 0 ) : 
 			foreach ( $attributes['errors'] as $error ) : ?>
@@ -483,7 +501,7 @@ class ANONY__User_Control {
 		$default_attributes = array( 'show_title' => false );
 		$attributes = shortcode_atts( $default_attributes, $attributes );
 		if ( is_user_logged_in() ) {
-			return esc_html__( 'You are already signed in.', ANONY_TEXTDOM );
+			return esc_html__( 'You are already signed in.', ANONY_UC_TEXTDOM );
 		} else {
 			if ( isset( $_REQUEST['login'] ) && isset( $_REQUEST['key'] ) ) {
 				$attributes['login'] = $_REQUEST['login'];
@@ -506,7 +524,7 @@ class ANONY__User_Control {
 	            endif; 
 				return $this->get_template_html( 'password_reset_form', $attributes );
 			} else {
-				return esc_html__( 'Invalid password reset link.', ANONY_TEXTDOM );
+				return esc_html__( 'Invalid password reset link.', ANONY_UC_TEXTDOM );
 			}
 		}
 	}
@@ -645,7 +663,7 @@ class ANONY__User_Control {
 		
 		ob_start();
 
-			require( ANONY_CNTRL_PATH . 'templates/' . $template_name . '.php');
+			require( ANONY_UC_PATH . 'templates/' . $template_name . '.php');
 
 			$html = ob_get_contents();
 
@@ -714,53 +732,53 @@ class ANONY__User_Control {
 	public function show_error_message( $error_code ) {
 		switch ( $error_code ) {
 			case 'empty_username':
-				return esc_html__( 'You do have an email address, right?', ANONY_TEXTDOM );
+				return esc_html__( 'You do have an email address, right?', ANONY_UC_TEXTDOM );
 
 			case 'empty_password':
-				return esc_html__( 'You need to enter a password to login.', ANONY_TEXTDOM );
+				return esc_html__( 'You need to enter a password to login.', ANONY_UC_TEXTDOM );
 
 			case 'invalid_username':
-				return esc_html__("We don't have any users with that username. Maybe you used a different one when signing up?",ANONY_TEXTDOM);
+				return esc_html__("We don't have any users with that username. Maybe you used a different one when signing up?",ANONY_UC_TEXTDOM);
 
 			case 'incorrect_password':
 				$err = wp_kses(
-							esc_html__("The password you entered wasn't quite right. <a href='%s'>Did you forget your password</a>?",ANONY_TEXTDOM), 
+							esc_html__("The password you entered wasn't quite right. <a href='%s'>Did you forget your password</a>?",ANONY_UC_TEXTDOM), 
 							array('a' => array('href'))
 						);
 				return sprintf( $err, wp_lostpassword_url() );
 			// Registration errors
 			case 'email':
-				return esc_html__( 'The email address you entered is not valid.', ANONY_TEXTDOM );
+				return esc_html__( 'The email address you entered is not valid.', ANONY_UC_TEXTDOM );
 
 			case 'email_exists':
-				return esc_html__( 'An account exists with this email address.', ANONY_TEXTDOM );
+				return esc_html__( 'An account exists with this email address.', ANONY_UC_TEXTDOM );
 
 			case 'username_exists':
-				return esc_html__( 'An account exists with this username.', ANONY_TEXTDOM );
+				return esc_html__( 'An account exists with this username.', ANONY_UC_TEXTDOM );
 
 			case 'closed':
-				return esc_html__( 'Registering new users is currently not allowed.', ANONY_TEXTDOM );
+				return esc_html__( 'Registering new users is currently not allowed.', ANONY_UC_TEXTDOM );
 			// Lost password
  
 			case 'empty_username':
-				return esc_html__( 'You need to enter your email address to continue.', ANONY_TEXTDOM );
+				return esc_html__( 'You need to enter your email address to continue.', ANONY_UC_TEXTDOM );
 
 			case 'invalid_email':
 			case 'invalidcombo':
-				return esc_html__( 'There are no users registered with this email address.', ANONY_TEXTDOM );
+				return esc_html__( 'There are no users registered with this email address.', ANONY_UC_TEXTDOM );
 
 			case 'expiredkey':
 			case 'invalidkey':
-				return esc_html__( 'The password reset link you used is not valid anymore.', ANONY_TEXTDOM );
+				return esc_html__( 'The password reset link you used is not valid anymore.', ANONY_UC_TEXTDOM );
 
 			case 'password_reset_mismatch':
-				return esc_html__( "The two passwords you entered don't match.", ANONY_TEXTDOM );
+				return esc_html__( "Password and password confirmation don't match.", ANONY_UC_TEXTDOM );
 
 			case 'password_reset_empty':
-				return esc_html__( "Sorry, we don't accept empty passwords.", ANONY_TEXTDOM );
+				return esc_html__( "Sorry, we don't accept empty passwords.", ANONY_UC_TEXTDOM );
 
 			default:
-				return esc_html__( 'An unknown error occurred. Please try again later.', ANONY_TEXTDOM );
+				return esc_html__( 'An unknown error occurred. Please try again later.', ANONY_UC_TEXTDOM );
 			break;
 			}
 	}
@@ -788,12 +806,12 @@ class ANONY__User_Control {
 		$user_id = wp_insert_user( $user_data );
 		$user = get_userdata($user_id);
 		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-		$subject = sprintf(esc_html__('Your login credintals for %s',ANONY_TEXTDOM), $blogname);
-		$message= sprintf(esc_html__('Thank you %1s for registering to our blog %2s',ANONY_TEXTDOM), $user->nickname, $blogname). "\r\n\r\n";
-		$message.=esc_html__('You login information is:',ANONY_TEXTDOM) . "\r\n\r\n";
-		$message.= sprintf(esc_html__('Username: %s',ANONY_TEXTDOM), $user->user_login) . "\r\n\r\n";
-		$message.=sprintf(esc_html__('Password: %s',ANONY_TEXTDOM), $password) . "\r\n";
-		$message.= esc_html__('To log into the admin area please us the following address ',ANONY_TEXTDOM) .home_url('member-login') . "\r\n";
+		$subject = sprintf(esc_html__('Your login credintals for %s',ANONY_UC_TEXTDOM), $blogname);
+		$message= sprintf(esc_html__('Thank you %1s for registering to our blog %2s',ANONY_UC_TEXTDOM), $user->nickname, $blogname). "\r\n\r\n";
+		$message.=esc_html__('You login information is:',ANONY_UC_TEXTDOM) . "\r\n\r\n";
+		$message.= sprintf(esc_html__('Username: %s',ANONY_UC_TEXTDOM), $user->user_login) . "\r\n\r\n";
+		$message.=sprintf(esc_html__('Password: %s',ANONY_UC_TEXTDOM), $password) . "\r\n";
+		$message.= esc_html__('To log into the admin area please us the following address ',ANONY_UC_TEXTDOM) .home_url('member-login') . "\r\n";
 		$headers ='';
 		
 		wp_mail($email,$subject,$message,$headers);
@@ -801,12 +819,12 @@ class ANONY__User_Control {
 	}*/
 
 	public function replace_retrieve_password_message( $message, $key, $user_login, $user_data ) {
-		$msg  = esc_html__( 'Hello!', ANONY_TEXTDOM ) . "\r\n\r\n";
-		$msg .= sprintf( esc_html__( 'You asked us to reset your password for your account using the email address %s.', ANONY_TEXTDOM ), $user_login ) . "\r\n\r\n";
-		$msg .= esc_html__( "If this was a mistake, or you didn't ask for a password reset, just ignore this email and nothing will happen.", ANONY_TEXTDOM ) . "\r\n\r\n";
-		$msg .= esc_html__( 'To reset your password, visit the following address:', ANONY_TEXTDOM ) . "\r\n\r\n";
+		$msg  = esc_html__( 'Hello!', ANONY_UC_TEXTDOM ) . "\r\n\r\n";
+		$msg .= sprintf( esc_html__( 'You asked us to reset your password for your account using the email address %s.', ANONY_UC_TEXTDOM ), $user_login ) . "\r\n\r\n";
+		$msg .= esc_html__( "If this was a mistake, or you didn't ask for a password reset, just ignore this email and nothing will happen.", ANONY_UC_TEXTDOM ) . "\r\n\r\n";
+		$msg .= esc_html__( 'To reset your password, visit the following address:', ANONY_UC_TEXTDOM ) . "\r\n\r\n";
 		$msg .= site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n\r\n";
-		$msg .= esc_html__( 'Thanks!', ANONY_TEXTDOM ) . "\r\n";
+		$msg .= esc_html__( 'Thanks!', ANONY_UC_TEXTDOM ) . "\r\n";
 
 		return $msg;
 	}
@@ -835,7 +853,7 @@ class ANONY__User_Control {
 
 
 		$menus= array(
-			ANONY_MENU => esc_html__('User control plugin menu', ANONY_TEXTDOM),
+			ANONY_MENU => esc_html__('User control plugin menu', ANONY_UC_TEXTDOM),
 		); 
 
 		foreach($menus as $location => $description){
@@ -851,7 +869,7 @@ class ANONY__User_Control {
 
 		if($menu->count === 0){
 
-			$item .='<li class="ucntrl-menu-item"><span id="anony-user-menu"></span>';
+			$item .='<li class="ucntrl-menu-item"><a id="anony-uc-menu-toggle" href="#"><span id="anony-user-menu-icon"></span>';
 
 			$item .= '<span>';
 
@@ -865,7 +883,7 @@ class ANONY__User_Control {
 
 				}else{
 
-					$item .= esc_html__('Welcome', ANONY_TEXTDOM).'&nbsp;'.$current_user->user_nicename;
+					$item .= esc_html__('Welcome', ANONY_UC_TEXTDOM).'&nbsp;'.$current_user->user_nicename;
 				}
 				
 			} else {
@@ -874,7 +892,7 @@ class ANONY__User_Control {
 			}
 
 			$item .= '</span>';
-			$item .= '<span><i class="fa fa-angle-down"></i></span></li>';
+			$item .= '<span><i class="fa fa-toggle-down"></i></span></a></li>';
 			$item .= '<li class="ucntrl-menu-item"><ul class = "anony-user-dropdown">';
 
 			if ( is_user_logged_in()) {
@@ -921,7 +939,7 @@ class ANONY__User_Control {
 			}
 		}
 
-		return $item;
+		return  apply_filters( 'anony_user_page_menu', $item );
 
 	}
 	
@@ -933,7 +951,7 @@ class ANONY__User_Control {
 	public function nav_menu_type_label( $menu_item ) {
 		$elems = array( '#ucntrllogin#', '#ucntrllogout#', '#ucntrlloginout#', '#ucntrlregister#' );
 		if ( isset( $menu_item->object, $menu_item->url ) && 'custom'== $menu_item->object && in_array( $menu_item->url, $elems ) ) {
-			$menu_item->type_label =  esc_html__( 'User control', ANONY_TEXTDOM );
+			$menu_item->type_label =  esc_html__( 'User control', ANONY_UC_TEXTDOM );
 		}
 
 		return $menu_item;
@@ -949,18 +967,18 @@ class ANONY__User_Control {
 		foreach ($styles as $style) {
 			wp_enqueue_style(
 				$style, 
-				ANONY_CNTRL_URI.('assets/css/'.$style.'.css'),
+				ANONY_UC_URI.('assets/css/'.$style.'.css'),
 				'',
-				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/css/'.$style.'.css'))
+				filemtime(wp_normalize_path(ANONY_UC_PATH.'assets/css/'.$style.'.css'))
 			);
 		}
 
 		if(is_rtl()){
 			wp_enqueue_style( 
 				'user-control-rtl', 
-				ANONY_CNTRL_URI.'assets/css/user-control-rtl.css',
+				ANONY_UC_URI.'assets/css/user-control-rtl.css',
 				'',
-				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/css/user-control-rtl.css'))
+				filemtime(wp_normalize_path(ANONY_UC_PATH.'assets/css/user-control-rtl.css'))
 			);
 		}
 
@@ -969,9 +987,9 @@ class ANONY__User_Control {
 		foreach ($scripts as $script) {
 			wp_enqueue_script( 
 				$script, 
-				ANONY_CNTRL_URI.'assets/js/'.$script.'.js',
+				ANONY_UC_URI.'assets/js/'.$script.'.js',
 				array('jquery'),
-				filemtime(wp_normalize_path(ANONY_CNTRL_PATH.'assets/js/'.$script.'.js')),
+				filemtime(wp_normalize_path(ANONY_UC_PATH.'assets/js/'.$script.'.js')),
 				true
 			);
 		}

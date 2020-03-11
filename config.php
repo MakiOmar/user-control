@@ -11,13 +11,13 @@
 	die( 'What are you trying to do?' );
 
 //Text domain
-define('ANONY_TEXTDOM', 'user-control'); 
+define('ANONY_UC_TEXTDOM', 'user-control'); 
 
 //Plugin path
-define('ANONY_CNTRL_PATH', plugin_dir_path( __FILE__ )); 
+define('ANONY_UC_PATH', plugin_dir_path( __FILE__ )); 
 
 //Plugin URI
-define('ANONY_CNTRL_URI', plugin_dir_url( __FILE__ ));
+define('ANONY_UC_URI', plugin_dir_url( __FILE__ ));
 
 //Menu slug
 define('ANONY_MENU', 'anony-user-control');
@@ -32,7 +32,7 @@ define('ANONY_REG', 'anony-register');
 define('ANONY_LOST', 'anony-password-lost');
 
 //Lost password page slug
-define('ANONY_CNTRL', wp_normalize_path( plugin_dir_path(__FILE__).'classes/' ));
+define('ANONY_UC', wp_normalize_path( plugin_dir_path(__FILE__).'classes/' ));
 
 //
 
@@ -40,12 +40,12 @@ define('ANONY_CNTRL', wp_normalize_path( plugin_dir_path(__FILE__).'classes/' ))
  * Holds a serialized array of all pathes to classes folders
  * @const
  */
-define('ANONY_CNTRL_AUTOLOADS' ,serialize(array(ANONY_CNTRL)));
+define('ANONY_UC_AUTOLOADS' ,serialize(array(ANONY_UC)));
 
 /*
 *Classes Auto loader
 */
-spl_autoload_register( 'anony_cntrl_autoloader' );
+spl_autoload_register( 'anony_UC_autoloader' );
 
 /**
  * User control classes autoloading.
@@ -54,7 +54,7 @@ spl_autoload_register( 'anony_cntrl_autoloader' );
  * @param  string $class_name
  * @return void
  */
-function anony_cntrl_autoloader( $class_name ) {
+function anony_UC_autoloader( $class_name ) {
 
 	if ( false !== strpos( $class_name, '__' )) {
 
@@ -66,7 +66,7 @@ function anony_cntrl_autoloader( $class_name ) {
 
 			require_once($class_name);
 		}else{
-			foreach(unserialize( ANONY_CNTRL_AUTOLOADS ) as $path){
+			foreach(unserialize( ANONY_UC_AUTOLOADS ) as $path){
 
 				$class_file = wp_normalize_path($path) .$class_name . '.php';
 

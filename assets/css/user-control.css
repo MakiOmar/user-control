@@ -11,12 +11,8 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
     background-color: transparent!important;
     color: #ffffff!important;
 }
-:focus{
-	     outline-color: transparent;
-	color: aliceblue;
-}
 
-#anony-user-menu{
+#anony-user-menu-icon{
 	background-image: url('../../images/user-icon.png');
 	display: inline-block;
 	width: 32px;
@@ -25,21 +21,30 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 }
 
 .ucntrl-menu-item{
+	min-width: 200px;
+}
+
+.ucntrl-menu-item, #anony-uc-menu-toggle{
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	max-width: 200px;
+}
+#anony-uc-menu-toggle{
+	justify-content: center;
 }
 .user-control  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgba(232,227,227,0.70);
+    color: rgba(87,122,140);
     opacity: 1; /* Firefox */
 }
 
 .user-control :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: rgba(232,227,227,0.70);
+    color: rgba(87,122,140);
 }
 
 .user-control ::-ms-input-placeholder { /* Microsoft Edge */
-    color: rgba(232,227,227,0.70);
+    color: rgba(87,122,140);
 }
 .usercontrol {
 	position: fixed;
@@ -55,6 +60,8 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 	padding: 20px;
 	border-radius: 30px 0 30px 0;
 	color: aliceblue;
+	width: 70%;
+	margin: auto;
 }
 
 .user-control a,.user-control p{
@@ -78,18 +85,22 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 	color: #222222;
 	font-size: 14px;
 }
-.user-control-form .smpg-button{
+.user-control-form .anony-uc-button{
 	display: inline-block;
-    width: 30%;
+	width: 25%;
 	padding: 5px;
 	line-height: 25px;
-	color: aliceblue;
+	color:
+	aliceblue;
 	text-align: center;
-	background-color: #b10030;
+	background-color:
+	#0e2f40;
 	border: none;
 	cursor: pointer;
 	font-weight: bold;
 	margin-top: 10px;
+	border-top-right-radius: 10px;
+	border-bottom-left-radius: 10px;
 }
 #user_nav_con{
 	width: 70%;
@@ -102,8 +113,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 .user-control-form input {
 	width: 100%;
 	font-size: 18px;
-	color: #ffffff!important;
-	background-color: transparent;
+	color: #6e7a99!important;
 	padding: 15px;
 	border:0;
 	border-top: 1px solid #ffffff;
@@ -151,7 +161,28 @@ justify-content: space-between;
 	border: 1px solid #c2c2c2;
 	border-radius: 5px;
 	width: 100%;
+	top: -5px;
 	
+}
+
+.anony-user-dropdown::before{
+	content: '';
+	display: block;
+	border-top: 1px solid #c2c2c2;
+	border-right: 1px solid #c2c2c2;
+	background: #fff;
+	width: 10px;
+	height: 10px;
+	transform: rotateZ(-45deg);
+	-moz-transform: rotateZ(-45deg);
+	-webkit-transform: rotateZ(-45deg);
+	position: absolute;
+	top: -7px;
+	left: 0;
+	right: 0;
+	margin:auto;
+
+
 }
 
 #user_menu_con .anony-user-dropdown li{
@@ -159,6 +190,14 @@ justify-content: space-between;
 }
 #user_menu_con .anony-user-dropdown li:last-child{
 	border-bottom: none;
+}
+
+.anony-user-dropdown li a{
+	padding: 5px;
+	font-size: 16px;
+	border-bottom: 1px solid #e3e3e3;
+	display: block;
+	width: 100%;
 }
 
 @media screen and (max-width: 767px){
