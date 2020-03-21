@@ -307,7 +307,7 @@ class ANONY__User_Control {
 
 				foreach (self::$page_definitions as $slug => $info) {
 
-					$page = get_page_by_path($page_slug);
+					$page = get_page_by_path($slug);
 
 					if ($page) self::$pages_ids[] = $page->ID;
 				}
@@ -742,7 +742,7 @@ class ANONY__User_Control {
 
 			case 'incorrect_password':
 				$err = wp_kses(
-							esc_html__("The password you entered wasn't quite right. <a href='%s'>Did you forget your password</a>?",ANONY_UC_TEXTDOM), 
+							__("The password you entered wasn't quite right. <a href='%s'>Did you forget your password</a>?",ANONY_UC_TEXTDOM), 
 							array('a' => array('href'))
 						);
 				return sprintf( $err, wp_lostpassword_url() );
