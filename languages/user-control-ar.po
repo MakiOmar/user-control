@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: User Control\n"
 "POT-Creation-Date: 2020-03-10 20:11+0300\n"
-"PO-Revision-Date: 2020-03-10 20:18+0300\n"
+"PO-Revision-Date: 2020-03-17 02:30+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar\n"
@@ -87,12 +87,12 @@ msgstr "تسجيل مستخدمين جدد غير مسموح حالياً."
 #, php-format
 msgid ""
 "You have successfully registered to <strong>%1s</strong>. We have emailed "
-"your password to the email address you entered.And you can login from <a "
-"href=\"%2s\">Here</a>"
+"your password to the email address you entered.And you can login from <a href="
+"\"%2s\">Here</a>"
 msgstr ""
-"تم تسيلك بنجاح في <strong>%1s</strong>. لقد قمنا بإرسال بريد إلكتروني به "
-"كلمة المرور الخاصة بك للبريد الذي قمت بإدخاله. يمكن تسجب الدخول من <a href="
-"\"%2s\">هنا</a>"
+"تم تسيلك بنجاح في <strong>%1s</strong>. لقد قمنا بإرسال بريد إلكتروني به كلمة "
+"المرور الخاصة بك للبريد الذي قمت بإدخاله. يمكن تسجب الدخول من <a href=\"%2s"
+"\">هنا</a>"
 
 #: classes/user-control.php:527
 msgid "Invalid password reset link."
@@ -115,9 +115,9 @@ msgstr "لايوجد لدينا اسم مسخدم كهذا، ربما استخد
 #: classes/user-control.php:745
 #, php-format
 msgid ""
-"The password you entered wasn't quite right. <a href='%s'>Did you forget "
-"your password</a>?"
-msgstr "كلمت المرور المستخدمة غير صحيحة. <a href='%s'>هل نسيت كلمة المرور</a>؟"
+"The password you entered wasn't quite right. <a href='%s'>Did you forget your "
+"password</a>?"
+msgstr "كلمة المرور المستخدمة غير صحيحة. <a href='%s'>هل نسيت كلمة المرور</a>؟"
 
 #: classes/user-control.php:751
 msgid "The email address you entered is not valid."
