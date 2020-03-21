@@ -10,6 +10,12 @@
  if( !defined( 'ABSPATH' ) )
 	die( 'What are you trying to do?' );
 
+/**
+ * Holds class prefix
+ * @const
+ */
+define('ANONY_UC_PREFIX', 'ANONY_' );
+
 //Text domain
 define('ANONY_UC_TEXTDOM', 'user-control'); 
 
@@ -32,7 +38,7 @@ define('ANONY_REG', 'anony-register');
 define('ANONY_LOST', 'anony-password-lost');
 
 //Lost password page slug
-define('ANONY_UC', wp_normalize_path( plugin_dir_path(__FILE__).'classes/' ));
+define('ANONY_UC', wp_normalize_path( ANONY_UC_PATH.'classes/' ));
 
 //
 
