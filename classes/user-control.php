@@ -15,6 +15,11 @@ class ANONY__User_Control {
 	public static $page_definitions;
 
 	public function __construct() {
+
+		global $anoucOptions;
+
+		$this->anoucOptions = $anoucOptions;
+
 		//Set shortcodes
 		$this->shortcodes = 
     	[
@@ -192,44 +197,71 @@ class ANONY__User_Control {
     }
 
     /**
+     * Will get the redirect url for each user page
+     * @param string $option The option name that stores page id
+     * @param string $path   The path to check if no option found
+     * @return string
+     */
+    public function redirectUrl($option, $path){
+
+    	if (isset($this->anoucOptions->$option) && empty($this->anoucOptions->$option)) {
+
+    			$redirect = get_permalink( intval($this->anoucOptions->$option) );
+
+
+
+    		}elseif(  null !== $post = get_page_by_path( $path )){
+    			$redirect = get_permalink( $post );
+    		}
+
+    		return isset($redirect) ? $redirect : home_url();
+    }
+    /**
      * Manage redirects
      */
     public function redirects(){
 
-    	/*------------Login redirect---------------------------------------------------------------*/
+    	/*------------Login redirect----------------------------------*/
     	$login_redirect = function(){
-    		$this->redirect_to(ANONY_LOGIN);
+    		
+    		
+    		$this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN));
     	};
     	add_action( 'login_form_login', $login_redirect );
 
-    	/*------------Registration redirect--------------------------------------------------------*/
+    	/*------------Registration redirect---------------------------------*/
     	$reg_redirect = function(){
-    		$this->redirect_to(ANONY_REG);
+
+    		$this->redirect_to($this->redirectUrl('register_page', ANONY_REG));
     	};
 		add_action( 'login_form_register', $reg_redirect );
 
-		/*------------Lost password redirect-------------------------------------------------------*/
+		/*------------Lost password redirect-----------------------------*/
     	$lost_redirect = function(){
-    		$this->redirect_to(ANONY_LOST);
+    		$this->redirect_to($this->redirectUrl('forget_password_page', ANONY_LOST));
     	};
     	add_action( 'login_form_lostpassword', $lost_redirect );
 		
-		/*-------------------Logout redirect--------------------------------------------------------*/
+		/*-------------------Logout redirect-----------------------------*/
 		$logout_redirect = function(){
-			wp_redirect( home_url( ANONY_LOGIN.'?logged_out=true' ) );
-			exit;
+
+			$redirect = $this->redirectUrl('login_page', ANONY_LOGIN);
+
+			$redirect = add_query_arg('logged_out', 'true', $redirect);
+
+			$this->redirect_to($redirect);
 		};	
     	add_action( 'wp_logout', $logout_redirect );
 
-    	/*------------Reset password redirect-------------------------------------------------------*/
+    	/*------------Reset password redirect-------------------------------*/
     	add_action( 'login_form_rp', array( $this, 'redirect_password_reset' ) );
 
     	add_action( 'login_form_resetpass', array( $this, 'redirect_password_reset' ) );
 
-    	/*------------authenticate redirect----------------------------------------------------------*/
+    	/*------------authenticate redirect---------------------------------*/
     	add_filter( 'authenticate', array( $this, 'authenticate_redirect_handling' ), 101, 3 );
 
-    	/*------------Prevent non-admins to access dashboard----------------------------------------------------------*/
+    	/*------------Prevent non-admins to access dashboard--------------------*/
     	add_action( 'init', array( $this, 'restrict_none_admins'));
     }
 
@@ -241,21 +273,24 @@ class ANONY__User_Control {
 	        // Verify key / login combo
 	        $user = check_password_reset_key( $_REQUEST['key'], $_REQUEST['login'] );
 
+	        $redirect_url = $this->redirectUrl('login_page', ANONY_LOGIN);
+
 	        if ( ! $user || is_wp_error( $user ) ) {
-	            if ( $user && $user->get_error_code() === 'expired_key' ) {
-	                wp_redirect( home_url( ANONY_LOGIN.'?login=expiredkey' ) );
-	            } else {
-	                wp_redirect( home_url( ANONY_LOGIN.'?login=invalidkey' ) );
-	            }
-	            exit;
+	            	
+	            $msg = ( $user && $user->get_error_code() === 'expired_key' ) ? 'expired_key' : 'invalidkey';
+
+	            $redirect_url = add_query_arg('login', $msg, $redirect_url);
+	            
+	            $this->redirect_to($redirect_url);
 	        }
 	 
-	        $redirect_url = home_url( ANONY_LOST );
+	        $redirect_url = $this->redirectUrl('reset_password_page', ANONY_RESET);
+
 	        $redirect_url = add_query_arg( 'login', esc_attr( $_REQUEST['login'] ), $redirect_url );
+
 	        $redirect_url = add_query_arg( 'key', esc_attr( $_REQUEST['key'] ), $redirect_url );
 	 
-	        wp_redirect( $redirect_url );
-	        exit;
+	       $this->redirect_to($redirect_url);
 	    }
 	}
 
@@ -539,12 +574,10 @@ class ANONY__User_Control {
 	public function do_register_user() {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
 
-				$redirect_url = home_url( ANONY_REG );
+				$redirect_url = $this->redirectUrl('register_page', ANONY_REG);
 
-				if(is_user_logged_in()){
-					wp_redirect( home_url( ANONY_LOGIN ) );
-					exit;
-				}
+				if(is_user_logged_in()) $this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN));
+			
 
 				if ( ! get_option( 'users_can_register' ) ) {
 					// Registration closed, display error
@@ -574,21 +607,30 @@ class ANONY__User_Control {
 					}
 				}
 
-				wp_redirect( $redirect_url );
-				exit;
+				$this->redirect_to( $redirect_url );
+				
 			}
 	}
 	
 	public function do_password_lost() {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
+
+		$loginUrl = get_permalink( intval($this->anoucOptions->login_page) );
+
+		$lostPassUrl  = get_permalink( intval($this->anoucOptions->forget_password_page) );
+
 		$errors = retrieve_password();
 		if ( is_wp_error( $errors ) ) {
+
 			// Errors found
-			$redirect_url = home_url( 'member-password-lost' );
+			$redirect_url = $lostPassUrl ? $lostPassUrl : home_url();
+
 			$redirect_url = add_query_arg( 'errors', join( ',', $errors->get_error_codes() ), $redirect_url );
 		} else {
+
 			// Email sent
-			$redirect_url = home_url( 'member-login' );
+			$redirect_url = $loginUrl ? $loginUrl : home_url();
+
 			$redirect_url = add_query_arg( 'checkemail', 'confirm', $redirect_url );
 		}
 
@@ -601,50 +643,64 @@ class ANONY__User_Control {
 			$rp_key = $_REQUEST['rp_key'];
 			$rp_login = $_REQUEST['rp_login'];
 
+			$loginUrl     = get_permalink( intval($this->anoucOptions->login_page) );
+
+			$resetPassUrl = get_permalink( intval($this->anoucOptions->reset_password_page) );
+
 			$user = check_password_reset_key( $rp_key, $rp_login );
 
 			if ( ! $user || is_wp_error( $user ) ) {
+				$redirect = $loginUrl ? $loginUrl : home_url();
 				if ( $user && $user->get_error_code() === 'expired_key' ) {
-					wp_redirect( home_url( 'member-login?login=expiredkey' ) );
+
+					$redirect = add_query_arg('login', 'expiredkey');
+					
 				} else {
-					wp_redirect( home_url( 'member-login?login=invalidkey' ) );
+
+					$redirect = add_query_arg('login', 'invalidkey');
 				}
+
+				wp_redirect($redirect);
 				exit;
 			}
+			
+			$redirect_url = add_query_arg( 'key', $rp_key, $resetPassUrl );
 
-			if ( isset( $_POST['pass1'] ) ) {
-				if ( $_POST['pass1'] != $_POST['pass2'] ) {
-					// Passwords don't match
-					$redirect_url = home_url( 'member-password-reset' );
+			$redirect_url = add_query_arg( 'login', $rp_login, $redirect_url );
 
-					$redirect_url = add_query_arg( 'key', $rp_key, $redirect_url );
-					$redirect_url = add_query_arg( 'login', $rp_login, $redirect_url );
-					$redirect_url = add_query_arg( 'error', 'password_reset_mismatch', $redirect_url );
+			if(!isset( $_POST['pass1'] ) || !isset( $_POST['pass2'] )){
+				$redirect_url = add_query_arg( 'error', 'password_missing', $this->resetPassUrl );
 
-					wp_redirect( $redirect_url );
-					exit;
-				}
-
-				if ( empty( $_POST['pass1'] ) ) {
-					// Password is empty
-					$redirect_url = home_url( 'member-password-reset' );
-
-					$redirect_url = add_query_arg( 'key', $rp_key, $redirect_url );
-					$redirect_url = add_query_arg( 'login', $rp_login, $redirect_url );
-					$redirect_url = add_query_arg( 'error', 'password_reset_empty', $redirect_url );
-
-					wp_redirect( $redirect_url );
-					exit;
-				}
-
-				// Parameter checks OK, reset password
-				reset_password( $user, $_POST['pass1'] );
-				wp_redirect( home_url( 'member-login?password=changed' ) );
-			} else {
-				echo "Invalid request.";
+				wp_redirect( $redirect_url );
+				exit();
 			}
 
-			exit;
+			if( empty( $_POST['pass1'] ) || empty( $_POST['pass2'] ) ) {
+
+				$redirect_url = add_query_arg( 'error', 'password_reset_empty', $redirect_url );
+
+				wp_redirect( $redirect_url );
+				exit();
+			}
+
+			if ( $_POST['pass1'] != $_POST['pass2'] ) {
+					// Passwords don't match
+					$redirect_url = add_query_arg( 'error', 'password_reset_mismatch', $redirect_url );
+
+				wp_redirect( $redirect_url );
+				exit();
+			}
+
+			//Parameter checks OK, reset password
+			reset_password( $user, $_POST['pass1'] );
+
+			$redirect = add_query_arg('password', 'changed', $loginUrl);
+
+			wp_redirect( $redirect );
+
+			exit();
+
+			
 		}
 	}
 
@@ -692,8 +748,10 @@ class ANONY__User_Control {
 				exit;
 			}
 
+			preg_match('/http/', $p, $match);
+
 			// The rest are redirected to the login page
-			$login_url = home_url( $p );
+			$login_url = !empty($match) ? $p : home_url( $p );
 
 			wp_redirect( $login_url );
 			exit;
@@ -703,12 +761,15 @@ class ANONY__User_Control {
 	public function restrict_none_admins(){
 		if ( is_admin() && ! current_user_can( 'administrator' ) &&
 			! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+
+			$this->accountUrl   = get_permalink( intval($this->anoucOptions->account_page) );
+
 			if ( is_user_logged_in() ) {
-				wp_redirect( home_url('member-account') );
+				//wp_redirect( $this->accountUrl );
 			}else{
-				wp_redirect( home_url('member-login') );
+				//wp_redirect( $loginUrl );
 			}
-			exit;
+			//exit;
 		}
 	}
 
@@ -811,7 +872,7 @@ class ANONY__User_Control {
 		$message.=esc_html__('You login information is:',ANONY_UC_TEXTDOM) . "\r\n\r\n";
 		$message.= sprintf(esc_html__('Username: %s',ANONY_UC_TEXTDOM), $user->user_login) . "\r\n\r\n";
 		$message.=sprintf(esc_html__('Password: %s',ANONY_UC_TEXTDOM), $password) . "\r\n";
-		$message.= esc_html__('To log into the admin area please us the following address ',ANONY_UC_TEXTDOM) .home_url('member-login') . "\r\n";
+		$message.= esc_html__('To log into the admin area please us the following address ',ANONY_UC_TEXTDOM) .home_url('anony-login') . "\r\n";
 		$headers ='';
 		
 		wp_mail($email,$subject,$message,$headers);
