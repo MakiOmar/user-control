@@ -37,6 +37,9 @@ define('ANONY_REG', 'anony-register');
 //Lost password page slug
 define('ANONY_LOST', 'anony-password-lost');
 
+//reset password page slug
+define('ANONY_RESET', 'anony-password-reset');
+
 //Lost password page slug
 define('ANONY_UC', wp_normalize_path( ANONY_UC_PATH.'classes/' ));
 
