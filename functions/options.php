@@ -59,6 +59,15 @@ $anoucsections['uc-pages']= array(
 							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
 							'validate'=> 'multiple_options',
 							
+						),
+
+						array(
+							'id'      => 'reset_password_page',
+							'title'   => esc_html__('Reset password page', ANONY_UC_TEXTDOM),
+							'type'    => 'select',
+							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
+							'validate'=> 'multiple_options',
+							
 						),						
 					)
 );
@@ -77,5 +86,5 @@ $anoucOptionsPage['page_type'] = 'menu';
 
 $Anouc_Options_Page = new ANONY_Theme_Settings( $options_nav, $anoucsections, [], $anoucOptionsPage);
 
-$Anouc_Options = ANONY_Options_Model::get_instance('Anouc_Options');
+$anoucOptions = ANONY_Options_Model::get_instance('Anouc_Options');
 
