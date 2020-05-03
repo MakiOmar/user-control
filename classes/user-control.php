@@ -202,19 +202,19 @@ class ANONY__User_Control {
      * @param string $path   The path to check if no option found
      * @return string
      */
-    public function redirectUrl($option, $path){
+    public function redirectUrl($option, $path, $default = null){
+    	
+    	$default = esc_url( home_url() );
 
-    	if (isset($this->anoucOptions->$option) && empty($this->anoucOptions->$option)) {
+    	if (isset($this->anoucOptions->$option) && !empty($this->anoucOptions->$option)) {
 
-    			$redirect = get_permalink( intval($this->anoucOptions->$option) );
+    			$redirect = esc_url( get_permalink( intval($this->anoucOptions->$option) ) );
 
-
-
-    		}elseif(  null !== $post = get_page_by_path( $path )){
-    			$redirect = get_permalink( $post );
-    		}
-
-    		return isset($redirect) ? $redirect : home_url();
+		}elseif(  null !== $post = get_page_by_path( $path )){
+			$redirect = esc_url( get_permalink( $post ) );
+		}
+    		
+    		return isset($redirect) ? $redirect : $default;
     }
     /**
      * Manage redirects
@@ -225,27 +225,27 @@ class ANONY__User_Control {
     	$login_redirect = function(){
     		
     		
-    		$this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN));
+    		$this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN, esc_url(wp_login_url())));
     	};
     	add_action( 'login_form_login', $login_redirect );
 
     	/*------------Registration redirect---------------------------------*/
     	$reg_redirect = function(){
 
-    		$this->redirect_to($this->redirectUrl('register_page', ANONY_REG));
+    		$this->redirect_to($this->redirectUrl('register_page', ANONY_REG, esc_url(wp_registration_url())));
     	};
 		add_action( 'login_form_register', $reg_redirect );
 
 		/*------------Lost password redirect-----------------------------*/
     	$lost_redirect = function(){
-    		$this->redirect_to($this->redirectUrl('forget_password_page', ANONY_LOST));
+    		$this->redirect_to($this->redirectUrl('forget_password_page', ANONY_LOST, esc_url( wp_lostpassword_url() )));
     	};
     	add_action( 'login_form_lostpassword', $lost_redirect );
 		
 		/*-------------------Logout redirect-----------------------------*/
 		$logout_redirect = function(){
 
-			$redirect = $this->redirectUrl('login_page', ANONY_LOGIN);
+			$redirect = $this->redirectUrl('login_page', ANONY_LOGIN, esc_url(wp_login_url()));
 
 			$redirect = add_query_arg('logged_out', 'true', $redirect);
 
