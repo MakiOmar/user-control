@@ -1,4 +1,6 @@
 <?php
+if( !defined( 'ABSPATH' ) )
+	die( 'What are you trying to do?' );
 /**
  * User manipulation
  *
@@ -6,9 +8,6 @@
  * @author Makiomar
  * @link http://makiomar.com
  */
-
-if( !defined( 'ABSPATH' ) )
-	die( 'What are you trying to do?' );
 
 if(!class_exists('ANONY__User')){
 
