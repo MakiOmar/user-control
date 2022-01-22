@@ -75,7 +75,7 @@ class ANONY__User_Control {
 
 		add_action( 'after_setup_theme', array($this, 'user_nav_menu' ) );
 
-		add_filter("wp_nav_menu_".ANONY_MENU."_items",array( $this, "add_user_control_menu_pages"),10 , 2);
+		add_filter("wp_nav_menu_".$this->getMenuSlug()."_items",array( $this, "add_user_control_menu_pages"),10 , 2);
 
 		add_filter( 'wp_setup_nav_menu_item', array( $this,'nav_menu_type_label' ));
 
@@ -86,6 +86,17 @@ class ANONY__User_Control {
 		 * Will filter front end links, so to show registration link, conditionaly, deppending on login condition
 		 */
 		add_filter( 'wp_nav_menu_objects', array( $this,'wp_nav_menu_objects' ));
+    }
+    
+    public function getMenuSlug(){
+    	
+    	$menu = get_term_by('slug', ANONY_MENU ,'nav_menu');
+		
+		$uc_menu_translation  = ANONY_TERM_HELP::getTermBy($menu->term_id, 'nav_menu');
+		
+		if(is_null($uc_menu_translation)) return '';
+		
+		return $uc_menu_translation->slug;
     }
 
     /**
@@ -204,7 +215,7 @@ class ANONY__User_Control {
      */
     public function redirectUrl($option, $path, $default = null){
     	
-    	$default = esc_url( home_url() );
+    	$default = is_null($default) ? esc_url( home_url() ) : $default;
 
     	if (isset($this->anoucOptions->$option) && !empty($this->anoucOptions->$option)) {
 
@@ -216,6 +227,7 @@ class ANONY__User_Control {
     		
     		return isset($redirect) ? $redirect : $default;
     }
+    
     /**
      * Manage redirects
      */
@@ -573,7 +585,7 @@ class ANONY__User_Control {
 	 */
 	public function do_register_user() {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
-
+    
 				$redirect_url = $this->redirectUrl('register_page', ANONY_REG);
 
 				if(is_user_logged_in()) $this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN));
@@ -584,30 +596,32 @@ class ANONY__User_Control {
 					$redirect_url = add_query_arg( 'register-errors', 'closed', $redirect_url );
 
 				} else {
-
-					/*$email = $_POST['email'];
-					
-					$user_name = sanitize_text_field( $_POST['user_name'] );
-					*/
 					$user = new ANONY__User(
 						[
-							'user_login' => sanitize_text_field( $_POST['user_name'] ), 
-							'user_email' => sanitize_email( $_POST['email'] ),
+							'user_login' => sanitize_text_field( $_POST['user_login'] ), 
+							'user_email' => sanitize_email( $_POST['user_email'] ),
 						]
 					);
-
-					if ( !empty( $user->errors ) && is_array($user->errors) ) {
+					
+					if ( !empty( $user->errors ) ) {
 
 						// Parse errors into a string and append as parameter to redirect
 						$errors = join( ',', $user->errors );
 						$redirect_url = add_query_arg( 'register', $errors, $redirect_url );
 					} else {
+					    
+					    extract($user->user_crids);
+					    
+					    $this->user_crids_notify($username, $password, $email);
+					    
+					    $redirect_url = $this->redirectUrl('login_page', ANONY_LOGIN);
 						// Success, redirect to login page.
-						$redirect_url = add_query_arg( 'registered', $email, $redirect_url );
+						$redirect_url = add_query_arg( 'registered', '1', $redirect_url );
 					}
 				}
-
-				$this->redirect_to( $redirect_url );
+                
+				wp_redirect( $redirect_url );
+			    exit;
 				
 			}
 	}
@@ -844,50 +858,59 @@ class ANONY__User_Control {
 			}
 	}
 
-	/*private function register_user( $email, $user_name ) {
-		$errors = new WP_Error();
-
-		if ( ! is_email( $email ) ) {
-
-			$errors->add( 'email', $this->show_error_message( 'email' ) );
-
-			return $errors;
-		}
-		if ( username_exists( $email ) || email_exists( $email ) ) {
-			$errors->add( 'email_exists', $this->show_error_message( 'email_exists') );
-			return $errors;
-		}
-		$password = wp_generate_password(8);
-		$user_data = array(
-			'user_login'    => $user_name,
-			'user_email'    => $email,
-			'user_pass'     => $password,
-			'nickname'      => $user_name,
-		);
-		$user_id = wp_insert_user( $user_data );
-		$user = get_userdata($user_id);
-		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-		$subject = sprintf(esc_html__('Your login credintals for %s',ANONY_UC_TEXTDOM), $blogname);
-		$message= sprintf(esc_html__('Thank you %1s for registering to our blog %2s',ANONY_UC_TEXTDOM), $user->nickname, $blogname). "\r\n\r\n";
-		$message.=esc_html__('You login information is:',ANONY_UC_TEXTDOM) . "\r\n\r\n";
-		$message.= sprintf(esc_html__('Username: %s',ANONY_UC_TEXTDOM), $user->user_login) . "\r\n\r\n";
-		$message.=sprintf(esc_html__('Password: %s',ANONY_UC_TEXTDOM), $password) . "\r\n";
-		$message.= esc_html__('To log into the admin area please us the following address ',ANONY_UC_TEXTDOM) .home_url('anony-login') . "\r\n";
-		$headers ='';
-		
-		wp_mail($email,$subject,$message,$headers);
-		return $user_id;
-	}*/
-
 	public function replace_retrieve_password_message( $message, $key, $user_login, $user_data ) {
-		$msg  = esc_html__( 'Hello!', ANONY_UC_TEXTDOM ) . "\r\n\r\n";
-		$msg .= sprintf( esc_html__( 'You asked us to reset your password for your account using the email address %s.', ANONY_UC_TEXTDOM ), $user_login ) . "\r\n\r\n";
-		$msg .= esc_html__( "If this was a mistake, or you didn't ask for a password reset, just ignore this email and nothing will happen.", ANONY_UC_TEXTDOM ) . "\r\n\r\n";
-		$msg .= esc_html__( 'To reset your password, visit the following address:', ANONY_UC_TEXTDOM ) . "\r\n\r\n";
-		$msg .= site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n\r\n";
-		$msg .= esc_html__( 'Thanks!', ANONY_UC_TEXTDOM ) . "\r\n";
+		$msg  = '</p>' . esc_html__( 'Hello!', ANONY_UC_TEXTDOM ) . '</p>';
+		$msg .= '</p>' . sprintf( esc_html__( 'You asked us to reset your password for your account using the email address %s.', ANONY_UC_TEXTDOM ), $user_login ) . '</p>';
+		$msg .= '</p>' . esc_html__( "If this was a mistake, or you didn't ask for a password reset, just ignore this email and nothing will happen.", ANONY_UC_TEXTDOM ) . '</p>';
+		$msg .= '</p>' . esc_html__( 'To reset your password, visit the following address:', ANONY_UC_TEXTDOM ) . '</p>';
+		$msg .= '</p>' . site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . '</p>';
+		$msg .= '</p>' . esc_html__( 'Thanks!', ANONY_UC_TEXTDOM ) . '</p>';
 
 		return $msg;
+	}
+	
+	/**
+	 * Notify user with new cridentals on insertion
+	 * @param string $username 
+	 * @param string $password 
+	 * @param string $email 
+	 * @return void
+	 */
+	public function user_crids_notify($username, $password, $email){
+
+		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+		
+		$subject = sprintf(
+					esc_html__('Your login credintals for %s',ANONY_UC_TEXTDOM), 
+					$blogname
+				);
+		
+		$message= '<p>' . sprintf(
+					esc_html__('Thank you %1$s for registering to our website %2$s',ANONY_UC_TEXTDOM), 
+					$username, 
+					$blogname
+				). '</p>';
+		
+		$message.= '<p>' . esc_html__('You login information is:',ANONY_UC_TEXTDOM) . '</p>';
+		
+		$message.= '<p>' . sprintf(
+					esc_html__('Username: %s',ANONY_UC_TEXTDOM), 
+					$username
+				) . '</p>';
+		
+		$message.= '</p>' . sprintf(
+					esc_html__('Password: %s',ANONY_UC_TEXTDOM), 
+					$password
+				) . '</p>';
+		
+		$message.= '<p>' . esc_html__('To log into your account please use the following address ',ANONY_UC_TEXTDOM) .$this->redirectUrl('login_page', ANONY_LOGIN ) . '</p>';
+        
+        $headers[] = "From: " . sanitize_email(get_bloginfo('admin_email'));
+        $headers[] = "MIME-Version: 1.0";
+        $headers[] = "Content-Type: text/html";
+        $headers[] = "charset=UTF-8";
+		
+		wp_mail($email,$subject,$message,$headers);
 	}
 	
 	/**------------------------------------------------------------------
@@ -923,11 +946,23 @@ class ANONY__User_Control {
 		}
 
 	}
-
+	
+	public function userPage($slug, $option){
+		$check_page = get_page_by_path( $slug );
+				
+		if (!is_null($check_page)) {
+			return $slug;
+		}elseif(isset($this->anoucOptions->$option) && !empty($this->anoucOptions->$option)){
+			return intval($this->anoucOptions->$option);
+		}
+		
+		return false;
+	}
+	
 	public function add_user_control_menu_pages($item , $args){
-
+		
 		$menu = get_term_by('slug', ANONY_MENU ,'nav_menu');
-
+				
 		if($menu->count === 0){
 
 			$item .='<li class="ucntrl-menu-item"><a id="anony-uc-menu-toggle" href="#"><span id="anony-user-menu-icon"></span>';
@@ -957,17 +992,32 @@ class ANONY__User_Control {
 			$item .= '<li class="ucntrl-menu-item"><ul class = "anony-user-dropdown">';
 
 			if ( is_user_logged_in()) {
-
-				$item .= $this->render_user_page_menu(['anony-account']);
+				
+				if(false !== $page = $this->userPage('anony-account', 'account_page')){
+					$item .= $this->render_user_page_menu($page);
+				}else{
+					$item .= esc_html__( 'No account page', ANONY_UC_TEXTDOM );
+				}
 
 				$item .='<li>';
-				$item .= '<a class="users-menu" href="'. esc_url(wp_logout_url( home_url('/') )).'">';
+				$item .= '<a class="users-menu" href="'. esc_url(wp_logout_url()).'">';
 				$item .= esc_html__( 'Log out' );
 				$item .= '</a></li>';
 
 				}else{
 					
-					$item .= $this->render_user_page_menu(['anony-login','anony-register']);
+					if(false !== $page = $this->userPage('anony-login', 'login_page')){
+						$item .= $this->render_user_page_menu($page);
+					}else{
+						$item .= esc_html__( 'No login page', ANONY_UC_TEXTDOM );
+					}
+					
+					if(false !== $page = $this->userPage('anony-register', 'register_page')){
+						$item .= $this->render_user_page_menu($page);
+					}else{
+						$item .= esc_html__( 'No login page', ANONY_UC_TEXTDOM );
+					}
+							
 			}
 
 			$item .= '</ul></li>';
@@ -978,26 +1028,30 @@ class ANONY__User_Control {
 
 	/**
 	 * Renders user pages menu
-	 * @param array $slugs Pages slugs to render
+	 * @param  array $data Pages slugs/IDs to render
 	 * @return string HTNL list tags
 	 */
-	public function render_user_page_menu($slugs){
-
-		if(!is_array($slugs)) return;
+	public function render_user_page_menu($page){
 
 		$item = '';
 
-		foreach($slugs as $page){
+		$post_obj = is_integer($page) ?  get_post( $page )  : get_page_by_path($page);
 
-			$post_obj = get_page_by_path($page);
-
-			if(is_object($post_obj)){
-
-				$item .= '<li class="ucntrl-menu-item">';
-				$item .= '<a class="users-menu" href="'.esc_url(get_permalink($post_obj->ID)).'">';
-				$item .= esc_html($post_obj->post_title);
-				$item .= '</a></li>';
+		if(is_object($post_obj)){
+			
+			if(ANONY_WPML_HELP::isActive()){
+				$translated_page_id = icl_object_id(intval($post_obj->ID), 'page', false, ANONY_WPML_HELP::gatActiveLang());
+				
+				if(!is_null($translated_page_id)){
+					$post_obj = get_post( $translated_page_id );
+				}
 			}
+			
+
+			$item .= '<li class="ucntrl-menu-item">';
+			$item .= '<a class="users-menu" href="'.esc_url(get_permalink($post_obj->ID)).'">';
+			$item .= esc_html($post_obj->post_title);
+			$item .= '</a></li>';
 		}
 
 		return  apply_filters( 'anony_user_page_menu', $item );

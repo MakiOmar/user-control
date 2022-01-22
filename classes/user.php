@@ -42,6 +42,12 @@ if(!class_exists('ANONY__User')){
 		 * @var object Stores an object of user
 		 */
 		public $_user;
+		
+		
+		/**
+		 * @var object Stores user crids
+		 */
+		public $user_crids;
 
 		/**
 		 * @var bool Weather to force user data to be exactly the same as the supplied data to constructor
@@ -51,7 +57,7 @@ if(!class_exists('ANONY__User')){
 		/**
 		 * @var array An array of errors codes
 		 */
-		public $errors;
+		public $errors = [];
 
 		/**
 		 * Constructor
@@ -71,31 +77,44 @@ if(!class_exists('ANONY__User')){
 
 			$this->_force    = $force;
 
-
 			extract($user_data);
-
 			//Main data like username and email should be supplied
 			if((!isset($user_login) || empty($user_login)  ) || (!isset($user_email) || empty($user_email))){
 
-				$this->errors[] = 'no-crids';
+				$this->errors[] = 'no_crids';
 
 				return;
 			}
 
-
+            /**---------------------------------------------------------------------------
+			 * In case of username or email exist, and needed to forcely change user_data
+			 *--------------------------------------------------------------------------*/
+			if($this->_force) {
+			    $this->user_force_manipulate();
+			    return;
+			}
+			
+			
 			if( $this->email_exists( $user_email )){
 
 				$this->email_exists    = true;
+				
+				if(!$this->_force) $this->errors[] = 'email_exists';
 
 				$this->_user           = get_user_by('email' , $user_email);
 
-			}elseif( username_exists( $user_login ) ){
+			}
+			
+			if( username_exists( $user_login ) ){
 
 				$this->username_exists = true;
+				
+				if(!$this->_force) $this->errors[] = 'username_exists';
 
 				$this->_user           = get_user_by('login' , $user_login);
 			}
 
+            
 			/**----------------------------------------------------------------------------
 			 * In case of username and email doesn't exist, insert the user
 			 *---------------------------------------------------------------------------*/
@@ -103,31 +122,12 @@ if(!class_exists('ANONY__User')){
 			if( ( !$this->username_exists &&  !$this->email_exists )){
 				
 				if(!isset($this->user_data['user_pass']) || empty($this->user_data['user_pass'])){
-					
 					$this->register_user();
 				}else{
 					
 					$this->insert_user();
 				}
 			}
-
-			/**----------------------------------------------------------------------------
-			 * In case of username OR email exists, and no forcing
-			 *---------------------------------------------------------------------------*/
-
-			if( ( $this->username_exists && !$this->_force)){
-				$this->errors[] = 'username_exists';
-			}
-
-			if( ( $this->email_exists && !$this->_force)){
-				$this->errors[] = 'email_exists';
-			}
-
-
-			/**---------------------------------------------------------------------------
-			 * In case of username or email exist, and needed to forcely change user_data
-			 *--------------------------------------------------------------------------*/
-			if($this->_force) $this->user_force_manipulate();
 				
 		}
 		
@@ -135,9 +135,28 @@ if(!class_exists('ANONY__User')){
 		 * Inserts new user but won't allow him to choose a password. but will send a password reset link that contains a key that its hash equals the user_activation_key key in the users column. After password reset it sends out a notification of reset.
 		 */
 		public function register_user(){
-			$user_id = register_new_user( $this->user_data['user_login'], $this->user_data['user_email'] );
+        
+			$password = wp_generate_password(8);
 
-			if(is_wp_error( $user_id )) $this->errors[] = 'insertion-faild';
+			$this->user_data['user_pass'] = $password;
+			
+			$user_id = wp_insert_user( $this->user_data );
+
+			if(!is_wp_error( $user_id )){
+			    
+                extract($this->user_data);
+                
+				$this->user_inserted = true;
+			
+				$this->user_crids = [
+				    'username' => $user_login, 
+				    'password' =>$user_pass, 
+				    'email' => $user_email
+				];
+
+			}else{
+				$this->errors[] = 'insertion_faild';
+			}
 		}
 
 		/**
@@ -150,19 +169,17 @@ if(!class_exists('ANONY__User')){
 		 */
 		public function insert_user(){
 			
-			extract($this->user_data);
-			
 			if(!isset($this->user_data['user_pass']) || empty($this->user_data['user_pass'])) 
 				return new WP_Error('password_required', esc_html__('You didn\'t choose your password', ANONY_UC_TEXTDOM));
 									
-			$user = wp_insert_user( $this->user_data );
+			$user_id = wp_insert_user( $this->user_data );
 
-			if(!is_wp_error( $user )){
+			if(!is_wp_error( $user_id )){
 				$this->user_inserted = true;
 			
 				$this->user_crids_notify($user_login, $user_pass, $user_email);
 			}else{
-				$this->errors[] = 'creation-faild';
+				$this->errors[] = 'creation_faild';
 			}
 			
 		}
@@ -311,49 +328,6 @@ if(!class_exists('ANONY__User')){
 				return true;
 
 			return false;
-		}
-
-		/**
-		 * Notify user with new cridentals on insertion
-		 * @param string $username 
-		 * @param string $password 
-		 * @param string $email 
-		 * @return void
-		 */
-		public function user_crids_notify($username, $password, $email){
-
-			$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-			
-			$subject = sprintf(
-						esc_html__('Your login credintals for %s',ANONY_UC_TEXTDOM), 
-						$blogname
-					);
-			
-			$message= sprintf(
-						esc_html__('Thank you %1$s for registering to our website %2$s',ANONY_UC_TEXTDOM), 
-						$username, 
-						$blogname
-					). "\n\n";
-			
-			$message.=esc_html__('You login information is:',ANONY_UC_TEXTDOM) . "\n\n";
-			
-			$message.= sprintf(
-						esc_html__('Username: %s',ANONY_UC_TEXTDOM), 
-						$username
-					) . "\n\n";
-			
-			$message.=sprintf(
-						esc_html__('Password: %s',ANONY_UC_TEXTDOM), 
-						$password
-					) . "\n";
-			
-			$message.= esc_html__('To log into your account please use the following address ',ANONY_UC_TEXTDOM) .get_home_url() . "\n";
-
-			$headers  = "From: " . sanitize_email(get_bloginfo('admin_email')) . "\n";
-			$headers .= "MIME-Version: 1.0\r\n";
-			$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-			
-			wp_mail($email,$subject,$message,$headers);
 		}
 	}
 }
