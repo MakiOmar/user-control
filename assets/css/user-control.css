@@ -1,15 +1,15 @@
 /* Change the default chrome's input field color;) */
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px #006699 inset;
-	box-shadow: 0 0 0 30px #6eb168 #006699;
+    /*-webkit-box-shadow: 0 0 0 30px #006699 inset;
+	box-shadow: 0 0 0 30px #006699;*/
 }
 /*Change text in autofill textbox*/
 input:-webkit-autofill {
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: #222 !important;
 }
 input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
     background-color: transparent!important;
-    color: #ffffff!important;
+    color: #222!important;
 }
 
 #anony-user-menu-icon{
@@ -116,8 +116,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 	color: #6e7a99!important;
 	padding: 15px;
 	border:0;
-	border-top: 1px solid #ffffff;
-	border-bottom: 1px solid #ffffff;
+	border-bottom: 1px solid #d7d7d7;
 	font-family: FontAwesome;
 }
 
