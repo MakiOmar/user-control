@@ -7,8 +7,7 @@
  * @link http://makiomar.com
  */
  
- if( !defined( 'ABSPATH' ) )
-	die( 'What are you trying to do?' );
+ if( !defined( 'ABSPATH' ) ) die( 'What are you trying to do?' );
 
 /**
  * Holds class prefix
@@ -28,22 +27,25 @@ define('ANONY_UC_URI', plugin_dir_url( __FILE__ ));
 //Menu slug
 define('ANONY_MENU', 'anony-user-control');
 
-//Login page slug
-define('ANONY_LOGIN', 'anony-login');
-
-//Registration page slug
-define('ANONY_REG', 'anony-register');
- 
-//Lost password page slug
-define('ANONY_LOST', 'anony-password-lost');
-
-//reset password page slug
-define('ANONY_RESET', 'anony-password-reset');
-
-//Lost password page slug
+//Classes path
 define('ANONY_UC', wp_normalize_path( ANONY_UC_PATH.'classes/' ));
 
-//
+add_action( 'init', function(){
+	//Login page slug
+	define('ANONY_LOGIN', anony_uc_page_slug('anony-login', 'login_page'));
+
+	//Account page
+	define('ANONY_ACCOUNT', anony_uc_page_slug('account-form', 'account_page'));
+
+	//Registration page slug
+	define('ANONY_REG', anony_uc_page_slug('anony-register', 'register_page'));
+	 
+	//Lost password page slug
+	define('ANONY_LOST', anony_uc_page_slug('anony-password-lost', 'forget_password_page'));
+
+	//reset password page slug
+	define('ANONY_RESET', anony_uc_page_slug('anony-password-reset', 'reset_password_page'));
+} );
 
 /**
  * Holds a serialized array of all pathes to classes folders
