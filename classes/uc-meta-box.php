@@ -59,7 +59,7 @@ if( ! class_exists( 'ANONY__UC_Meta_Box' )){
         		</div>
         		<p class="button-controls">
         			<span class="list-controls">
-        				<a href="/wordpress/wp-admin/nav-menus.php?page-tab=all&amp;selectall=1#posttype-cntrl-user" class="select-all"><?php esc_html_e( 'Select all' ) ?></a>
+        				<a href="<?= get_bloginfo('url') ?>/wp-admin/nav-menus.php?page-tab=all&amp;selectall=1#posttype-cntrl-user" class="select-all"><?php esc_html_e( 'Select all' ) ?></a>
         			</span>
         			<span class="add-to-menu">
         				<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu' , ANONY_UC_TEXTDOM); ?>" name="add-post-type-menu-item" id="submit-posttype-cntrl-user">
