@@ -26,6 +26,8 @@ register_activation_hook( __FILE__, 'anonyUcRegHook' );
 
 if (!defined("ANOENGINE")) return;
 
+require_once('functions/help.php');
+
 require_once('config.php');
 
 require_once('functions/options.php');
