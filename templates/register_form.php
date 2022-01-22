@@ -5,18 +5,22 @@ if( !defined( 'ABSPATH' ) )
 
 <div id="register-form">
     <?php if ( $attributes['show_title'] ) : ?>
-        <h3><?php _e( 'Register', 'user-control' ); ?></h3>
+        <h3><?php esc_html_e( 'Register', 'user-control' ); ?></h3>
     <?php endif; ?>
+    
     <div class="user-control">
-		<form id="signupform" class="user-control-form" action="<?php echo wp_registration_url(); ?>" method="post">
-		   <input type="text" class="username" name="email" id="email" placeholder="<?php _e('&#xf090; Email Adress','user-control');?>">
-		   <input type="text" class="username" name="user_name" id="user_name" placeholder="<?php _e('&#xf007; Username','user-control');?>">
+        
+		<form id="signupform" class="user-control-form" action="<?php echo wp_registration_url(); ?>" method="post" autocomplete="on">
+		    
+		   <input type="email" class="username" name="user_email" id="user_email" placeholder="<?php esc_html_e('Email Adress','user-control');?>">
+		   
+		   <input type="text" class="username" name="user_login" id="user_login" placeholder="<?php esc_html_e('Username','user-control');?>">
 
 		   <p class="form-row">
-			<?php _e( 'Note: Your password will be generated automatically and sent to your email address.', 'user-control' ); ?>
+			<?php esc_html_e( 'Note: Your password will be generated automatically and sent to your email address.', 'user-control' ); ?>
 		   </p>
 		   <p class="signup-submit">
-				<button type="submit" name="submit" class="anony-uc-button" form="signupform"><?php _e( 'Register', 'user-control' ); ?></button>
+				<button type="submit" name="submit" class="anony-uc-button" form="signupform"><?php esc_html_e( 'Register', 'user-control' ); ?></button>
 		  </p>
 		  </form>
 	  </div>
