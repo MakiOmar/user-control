@@ -47,11 +47,29 @@ add_action( 'init', function(){
 	define('ANONY_RESET', anony_uc_page_slug('anony-password-reset', 'reset_password_page'));
 } );
 
+//reset password page slug
+define('ANONY_UC_ERRORS', serialize(
+    [
+    
+    'email_exists' => esc_html__('E-mail already exists.', ANONY_UC_TEXTDOM),
+    'username_exists' => esc_html__('Username already exists.', ANONY_UC_TEXTDOM),
+    'no_crids' => esc_html__('Either email or username is not set.', ANONY_UC_TEXTDOM),
+    'insertion_faild' => esc_html__('Account insertion failed.', ANONY_UC_TEXTDOM),
+    'creation_faild' => esc_html__('Account creation failed.', ANONY_UC_TEXTDOM),
+    'email_not_changed' => esc_html__('E-mail hasn\'t been changed.', ANONY_UC_TEXTDOM),
+    'username_not_changed' => esc_html__('Username hasn\'t been changed.', ANONY_UC_TEXTDOM),
+    'password_not_changed' => esc_html__('Password hasn\'t been changed.', ANONY_UC_TEXTDOM)
+    
+    ]
+    ));
+
+//
+
 /**
- * Holds a serialized array of all pathes to classes folders
+ * Holds a JSON encoded array of all pathes to classes folders
  * @const
  */
-define('ANONY_UC_AUTOLOADS' ,serialize(array(ANONY_UC)));
+define('ANONY_UC_AUTOLOADS' ,wp_json_encode(array(ANONY_UC)));
 
 /*
 *Classes Auto loader
@@ -77,7 +95,7 @@ function anony_UC_autoloader( $class_name ) {
 
 			require_once($class_name);
 		}else{
-			foreach(unserialize( ANONY_UC_AUTOLOADS ) as $path){
+			foreach(json_decode( ANONY_UC_AUTOLOADS ) as $path){
 
 				$class_file = wp_normalize_path($path) .$class_name . '.php';
 
