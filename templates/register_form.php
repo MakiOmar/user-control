@@ -11,11 +11,16 @@ if( !defined( 'ABSPATH' ) )
     <div class="user-control">
         
 		<form id="signupform" class="user-control-form" action="<?php echo wp_registration_url(); ?>" method="post" autocomplete="on">
-		    
-		   <input type="email" class="username" name="user_email" id="user_email" placeholder="<?php esc_html_e('Email Adress','user-control');?>">
-		   
-		   <input type="text" class="username" name="user_login" id="user_login" placeholder="<?php esc_html_e('Username','user-control');?>">
-
+		 
+            <?php
+            
+            foreach($fields as $id => $field_atts){
+                extract($field_atts);
+            ?>
+                <input type="<?= $type ?>" name="<?= $name ?>" id ="<?= $id ?>" class="<?= $class ?>" placeholder="<?= $placeholder ?>"/>
+            <?php }
+            
+            ?>
 		   <p class="form-row">
 			<?php esc_html_e( 'Note: Your password will be generated automatically and sent to your email address.', 'user-control' ); ?>
 		   </p>

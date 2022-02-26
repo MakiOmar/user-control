@@ -489,6 +489,28 @@ class ANONY__User_Control {
 		$default_attributes = array( 'show_title' => false );
 
 		$attributes = shortcode_atts( $default_attributes, $attributes );
+		
+		$fields = apply_filters( 'uc-registration-fields' ,[
+		    
+		        'user_email' => [
+		            
+		            'type' => 'email',
+		            'name' => 'user_email',
+		            'class' => 'username',
+		            'placeholder' => esc_html__('Email Adress','user-control'),
+		            
+		        ],
+		        
+		        'user_login' => [
+		            
+		            'type' => 'text',
+		            'name' => 'user_login',
+		            'class' => 'username',
+		            'placeholder' => esc_html__('Username','user-control'),
+		            
+		        ],
+		    
+		    ]);
 
 		if ( is_user_logged_in() ) {
 			return esc_html__( 'You are already signed in.', ANONY_UC_TEXTDOM );
@@ -502,7 +524,7 @@ class ANONY__User_Control {
 				$html .='<p class="registeration-info">'.sprintf(esc_html__( 'You have successfully registered to <strong>%1s</strong>. We have emailed your password to the email address you entered.And you can login from <a href="%2s">Here</a>', ANONY_UC_TEXTDOM ), get_bloginfo( 'name'), wp_login_url()).'</p>';
     			
 			}
-			$html .= $this->get_template_html( 'register_form', $attributes );
+			$html .= $this->get_template_html( 'register_form', $attributes, $fields );
 
 			return $html;
 		}
@@ -584,46 +606,52 @@ class ANONY__User_Control {
 	 * @return type
 	 */
 	public function do_register_user() {
-		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
-    
-				$redirect_url = $this->redirectUrl('register_page', ANONY_REG);
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) return;
 
-				if(is_user_logged_in()) $this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN));
+		$redirect_url = $this->redirectUrl('register_page', ANONY_REG);
+
+		if(is_user_logged_in()) $this->redirect_to($this->redirectUrl('login_page', ANONY_LOGIN));
+	
+
+		if ( ! get_option( 'users_can_register' ) ) {
+			// Registration closed, display error
+			$redirect_url = add_query_arg( 'register-errors', 'closed', $redirect_url );
+
+		} else {
+		    
+			$user = new ANONY__User(
+				[
+					'user_login' => sanitize_text_field( $_POST['user_login'] ), 
+					'user_email' => sanitize_email( $_POST['user_email'] ),
+				]
+			);
 			
+			if ( !empty( $user->errors ) ) {
 
-				if ( ! get_option( 'users_can_register' ) ) {
-					// Registration closed, display error
-					$redirect_url = add_query_arg( 'register-errors', 'closed', $redirect_url );
-
-				} else {
-					$user = new ANONY__User(
-						[
-							'user_login' => sanitize_text_field( $_POST['user_login'] ), 
-							'user_email' => sanitize_email( $_POST['user_email'] ),
-						]
-					);
-					
-					if ( !empty( $user->errors ) ) {
-
-						// Parse errors into a string and append as parameter to redirect
-						$errors = join( ',', $user->errors );
-						$redirect_url = add_query_arg( 'register', $errors, $redirect_url );
-					} else {
-					    
-					    extract($user->user_crids);
-					    
-					    $this->user_crids_notify($username, $password, $email);
-					    
-					    $redirect_url = $this->redirectUrl('login_page', ANONY_LOGIN);
-						// Success, redirect to login page.
-						$redirect_url = add_query_arg( 'registered', '1', $redirect_url );
-					}
-				}
-                
-				wp_redirect( $redirect_url );
-			    exit;
-				
+				// Parse errors into a string and append as parameter to redirect
+				$errors = join( ',', $user->errors );
+				$redirect_url = add_query_arg( 'register', $errors, $redirect_url );
+			} else {
+			    
+			    extract($user->user_crids);
+			    
+			    $this->user_crids_notify($username, $password, $email);
+			    
+			    foreach($_POST as $meta_key => $meta_value){
+			        if(in_array($meta_key, ['user_login', 'user_email'])) continue;
+			        update_user_meta(  $user->_user_id,  $meta_key,  wp_strip_all_tags($meta_value));
+			    }
+			    
+			    $redirect_url = $this->redirectUrl('login_page', ANONY_LOGIN);
+				// Success, redirect to login page.
+				$redirect_url = add_query_arg( 'registered', '1', $redirect_url );
 			}
+		}
+        
+		wp_redirect( $redirect_url );
+	    exit;
+				
+			
 	}
 	
 	public function do_password_lost() {
@@ -727,7 +755,7 @@ class ANONY__User_Control {
 	 * @param  array  $attributes Array of data comming from shortcode 
 	 * @return string Template html;
 	 */
-	private function get_template_html( $template_name, $attributes = null ) {
+	private function get_template_html( $template_name, $attributes = null, $fields = [] ) {
 
 		if ( ! $attributes ) $attributes = array();
 		
