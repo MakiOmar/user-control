@@ -43,6 +43,11 @@ if(!class_exists('ANONY__User')){
 		 */
 		public $_user;
 		
+		/**
+		 * @var object Stores registered user id
+		 */
+		public $_user_id;
+		
 		
 		/**
 		 * @var object Stores user crids
@@ -122,10 +127,10 @@ if(!class_exists('ANONY__User')){
 			if( ( !$this->username_exists &&  !$this->email_exists )){
 				
 				if(!isset($this->user_data['user_pass']) || empty($this->user_data['user_pass'])){
-					$this->register_user();
+					$this->_user_id  = $this->register_user();
 				}else{
 					
-					$this->insert_user();
+					$this->_user_id = $this->insert_user();
 				}
 			}
 				
@@ -157,6 +162,8 @@ if(!class_exists('ANONY__User')){
 			}else{
 				$this->errors[] = 'insertion_faild';
 			}
+			
+			return $user_id;
 		}
 
 		/**
@@ -168,7 +175,7 @@ if(!class_exists('ANONY__User')){
 		 * @return void
 		 */
 		public function insert_user(){
-			
+		    
 			if(!isset($this->user_data['user_pass']) || empty($this->user_data['user_pass'])) 
 				return new WP_Error('password_required', esc_html__('You didn\'t choose your password', ANONY_UC_TEXTDOM));
 									
@@ -182,6 +189,7 @@ if(!class_exists('ANONY__User')){
 				$this->errors[] = 'creation_faild';
 			}
 			
+			return $user_id;
 		}
 		
 		/**
