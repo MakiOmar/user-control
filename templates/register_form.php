@@ -10,15 +10,16 @@ if( !defined( 'ABSPATH' ) )
     
     <div class="user-control">
         
-		<form id="signupform" class="user-control-form" action="<?php echo wp_registration_url(); ?>" method="post" autocomplete="on">
+		<form id="signupform" class="user-control-form" action="<?php echo esc_url(wp_registration_url()); ?>" method="post" autocomplete="on">
 		 
             <?php
             
-            foreach($fields as $id => $field_atts){
-                extract($field_atts);
-            ?>
-                <input type="<?= $type ?>" name="<?= $name ?>" id ="<?= $id ?>" class="<?= $class ?>" placeholder="<?= $placeholder ?>"/>
-            <?php }
+            foreach($fields as $field){
+
+                $render_field = new ANONY_Input_Field($field, null, 'form');
+
+				echo $render_field->field_init();
+            }
             
             ?>
 		   <p class="form-row">
