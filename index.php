@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: User Control
- * Plugin URI: https://prosentra.com
+ * Plugin URI: https://makiomar.com
  * Description: Adds a user control interface for login, register and forget password 
  * Version: 1.0.0
  * Author: Mohammad Omar
@@ -84,7 +84,6 @@ add_action('admin_init', array($cntrl_nav, 'add_nav_menu_meta_boxes'));
  *
  * @since 1.0.0
  */
-
 add_action( 'plugins_loaded', function() {
   load_plugin_textdomain( ANONY_UC_TEXTDOM, false, basename( dirname( __FILE__ ) ) . '/languages' ); 
 } );
