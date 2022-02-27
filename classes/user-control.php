@@ -492,19 +492,17 @@ class ANONY__User_Control {
 		
 		$fields = apply_filters( 'uc-registration-fields' ,[
 		    
-		        'user_email' => [
-		            
+		        [
+		            'id' => 'user_email',
 		            'type' => 'email',
-		            'name' => 'user_email',
 		            'class' => 'username',
 		            'placeholder' => esc_html__('Email Adress','user-control'),
 		            
 		        ],
 		        
-		        'user_login' => [
-		            
+		        [
+		            'id' => 'user_login',
 		            'type' => 'text',
-		            'name' => 'user_login',
 		            'class' => 'username',
 		            'placeholder' => esc_html__('Username','user-control'),
 		            
@@ -632,7 +630,6 @@ class ANONY__User_Control {
 				$errors = join( ',', $user->errors );
 				$redirect_url = add_query_arg( 'register', $errors, $redirect_url );
 			} else {
-			    
 			    extract($user->user_crids);
 			    
 			    $this->user_crids_notify($username, $password, $email);
@@ -761,7 +758,11 @@ class ANONY__User_Control {
 		
 		ob_start();
 
+			do_action('uc_before_template');
+
 			require( ANONY_UC_PATH . 'templates/' . $template_name . '.php');
+
+			do_action('after_before_template');
 
 			$html = ob_get_contents();
 
@@ -912,26 +913,33 @@ class ANONY__User_Control {
 					esc_html__('Your login credintals for %s',ANONY_UC_TEXTDOM), 
 					$blogname
 				);
-		
-		$message= '<p>' . sprintf(
+		$direction = is_rtl() ? 'rtl' : 'ltr';
+		$text_align = is_rtl() ? 'right' : 'left';
+
+		$style = sprintf('direction:%1$s;text-align:%2$s', $direction, $text_align);
+
+		$message = '<div style="'.$style.'">';
+
+		$message .= '<p>' . sprintf(
 					esc_html__('Thank you %1$s for registering to our website %2$s',ANONY_UC_TEXTDOM), 
 					$username, 
 					$blogname
 				). '</p>';
 		
-		$message.= '<p>' . esc_html__('You login information is:',ANONY_UC_TEXTDOM) . '</p>';
+		$message .= '<p>' . esc_html__('You login information is:',ANONY_UC_TEXTDOM) . '</p>';
 		
-		$message.= '<p>' . sprintf(
+		$message .= '<p>' . sprintf(
 					esc_html__('Username: %s',ANONY_UC_TEXTDOM), 
 					$username
 				) . '</p>';
 		
-		$message.= '</p>' . sprintf(
+		$message .= '</p>' . sprintf(
 					esc_html__('Password: %s',ANONY_UC_TEXTDOM), 
 					$password
 				) . '</p>';
 		
-		$message.= '<p>' . esc_html__('To log into your account please use the following address ',ANONY_UC_TEXTDOM) .$this->redirectUrl('login_page', ANONY_LOGIN ) . '</p>';
+		$message .= '<p>' . esc_html__('To log into your account please use the following address ',ANONY_UC_TEXTDOM) .$this->redirectUrl('login_page', ANONY_LOGIN ) . '</p>';
+		$message .= '</div>';
         
         $headers[] = "From: " . sanitize_email(get_bloginfo('admin_email'));
         $headers[] = "MIME-Version: 1.0";
