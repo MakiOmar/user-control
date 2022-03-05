@@ -14,11 +14,12 @@ if( !defined( 'ABSPATH' ) )
 		 
             <?php
             
-            foreach($fields as $field){
-
+            foreach($fields as $field_id => $field){
+                
                 $render_field = new ANONY_Input_Field($field, null, 'form');
 
 				echo $render_field->field_init();
+                
             }
             
             ?>

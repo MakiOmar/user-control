@@ -491,24 +491,28 @@ class ANONY__User_Control {
 		$attributes = shortcode_atts( $default_attributes, $attributes );
 		
 		$fields = apply_filters( 'uc-registration-fields' ,[
-		    
-		        [
-		            'id' => 'user_email',
+
+	        'user_email'=> 
+	            [
+	                'id' => 'user_email',
+	                'name' => 'user_email',
 		            'type' => 'email',
 		            'class' => 'username',
-		            'placeholder' => esc_html__('Email Adress','user-control'),
-		            
-		        ],
-		        
-		        [
-		            'id' => 'user_login',
+		            'placeholder' => esc_html__('Email Adress','user-control')
+	            ],
+	            
+	        'user_login' => 
+	            [
+	                'id' => 'user_login',
+	                'name' => 'user_login',
 		            'type' => 'text',
 		            'class' => 'username',
-		            'placeholder' => esc_html__('Username','user-control'),
-		            
-		        ],
-		    
-		    ]);
+		            'placeholder' => esc_html__('Username','user-control')
+	            ]
+	            
+	        
+	    
+	    ]);
 
 		if ( is_user_logged_in() ) {
 			return esc_html__( 'You are already signed in.', ANONY_UC_TEXTDOM );
