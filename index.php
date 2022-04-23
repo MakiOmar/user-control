@@ -97,13 +97,25 @@ add_action( 'plugins_loaded', function() {
  * @return string
  */
 add_filter( 'login_redirect', function ( $redirect_to, $request, $user ) {
+
     //is there a user to check?
     if (isset($user->roles) && is_array($user->roles)) {
-        //check for subscribers
-        if (in_array('subscriber', $user->roles)) {
-            // redirect them to another URL, in this case, the homepage 
-            $redirect_to =  home_url('/anony-account');
+        //check for admin
+        if (in_array('administrator', $user->roles)) {
+            return $redirect_to;
         }
+    }
+
+    if( class_exists( 'ANONY_Options_Model' ) ){
+        $anoucOptions = ANONY_Options_Model::get_instance('Anouc_Options');
+
+        if( isset( $anoucOptions->account_page ) && !empty( $anoucOptions->account_page ) ){
+            $redirect_to = get_the_permalink( $anoucOptions->account_page ) ;
+
+            
+        }
+    }else{
+        $redirect_to =  home_url();
     }
 
     return $redirect_to;
