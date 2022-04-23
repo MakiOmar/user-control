@@ -38,3 +38,36 @@ function anony_uc_page_slug($slug, $option){
 	
 	
 }
+
+/**
+ * Add custom roles.
+ * 
+ */ 
+add_action( 'init', function () {
+
+	$custom_roles = apply_filters( 'uc_custom_roles', array() );
+
+	if ( empty( $custom_roles ) ) {
+		return;
+	}
+
+	foreach( $custom_roles as $custom_roles ){
+
+		if( !isset( $custom_roles[ 'role' ] || !isset( $custom_roles[ 'display_name' ] ) ){
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'Custom role is missing required data: role/display_name' );
+			}
+			continue;
+		}
+
+		if ( !isset( $custom_roles[ 'capabilities' ] ) ) {
+			$custom_roles[ 'capabilities' ] = array();
+		}
+
+		if(is_null( get_role( $custom_roles[ 'role' ] ) )){
+	        add_role( $custom_roles[ 'role' ],  $custom_roles[ 'display_name' ], $custom_roles[ 'capabilities' ]  );
+	    }
+	}
+
+
+} );
