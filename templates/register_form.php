@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php esc_html_e( 'Note: Your password will be generated automatically and sent to your email address.', 'user-control' ); ?>
 		   </p>
 		   <p class="signup-submit">
-				<button type="submit" name="submit" class="anony-uc-button" form="signupform"><?php esc_html_e( 'Register', 'user-control' ); ?></button>
+				<button type="submit" name="submit" class="anony-uc-button" form="signupform" value="uc-registration"><?php esc_html_e( 'Register', 'user-control' ); ?></button>
 		  </p>
 		  </form>
 	  </div>
