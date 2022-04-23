@@ -90,13 +90,23 @@ class ANONY__User_Control {
 
 		$menu = get_term_by( 'slug', ANONY_MENU, 'nav_menu' );
 
-		$uc_menu_translation = ANONY_TERM_HELP::getTermBy( $menu->term_id, 'nav_menu' );
+		if ( !$menu ) {
+			return ANONY_MENU;
+		}
+		if ( ANONY_WPML_HELP::isActive() ) {
 
-		if ( is_null( $uc_menu_translation ) ) {
-			return '';
+			$lang = apply_filters( 'wpml_current_language', null );
+
+			$uc_menu_translation = ANONY_TERM_HELP::getTermBy( $menu->term_id, 'nav_menu', $lang );
+
+			if ( is_null( $uc_menu_translation ) ) {
+				return ANONY_MENU;
+			}
+			return $uc_menu_translation->slug;
 		}
 
-		return $uc_menu_translation->slug;
+		return ANONY_MENU;
+		
 	}
 
 	/**
@@ -980,7 +990,9 @@ class ANONY__User_Control {
 		$message .= '<p>' . esc_html__( 'To log into your account please use the following address ', ANONY_UC_TEXTDOM ) . $this->redirectUrl( 'login_page', ANONY_LOGIN ) . '</p>';
 		$message .= '</div>';
 
-		$headers[] = 'From: ' . sanitize_email( get_bloginfo( 'admin_email' ) );
+		$from = sprintf( 'From: %1$s <%2$s>', get_bloginfo('name'), sanitize_email( get_bloginfo( 'admin_email' ) ) );
+
+		$headers[] = $from;
 		$headers[] = 'MIME-Version: 1.0';
 		$headers[] = 'Content-Type: text/html';
 		$headers[] = 'charset=UTF-8';
