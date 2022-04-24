@@ -26,9 +26,9 @@ function anony_uc_page_slug($slug, $option){
 	
 	if(is_null($post_obj)) return $slug;
 	
-	if(!ANONY_WPML_HELP::isActive()) return $slug;
+	if(!ANONY_Wpml_Help::is_active()) return $slug;
 	
-	$translated_page_id = icl_object_id(intval($post_obj->ID), 'page', false, ANONY_WPML_HELP::gatActiveLang());
+	$translated_page_id = icl_object_id(intval($post_obj->ID), 'page', false, ANONY_Wpml_Help::gatActiveLang());
 	
 	if(!is_null($translated_page_id)){
 		$post_obj = get_post( $translated_page_id );
@@ -53,7 +53,7 @@ add_action( 'init', function () {
 
 	foreach( $custom_roles as $custom_roles ){
 
-		if( !isset( $custom_roles[ 'role' ] || !isset( $custom_roles[ 'display_name' ] ) ){
+		if( !isset( $custom_roles[ 'role' ] ) || !isset( $custom_roles[ 'display_name' ] ) ){
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( 'Custom role is missing required data: role/display_name' );
 			}

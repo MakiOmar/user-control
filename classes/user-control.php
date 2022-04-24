@@ -93,7 +93,7 @@ class ANONY__User_Control {
 		if ( !$menu ) {
 			return ANONY_MENU;
 		}
-		if ( ANONY_WPML_HELP::isActive() ) {
+		if ( ANONY_Wpml_Help::is_active() ) {
 
 			$lang = apply_filters( 'wpml_current_language', null );
 
@@ -1126,8 +1126,8 @@ class ANONY__User_Control {
 
 		if ( is_object( $post_obj ) ) {
 
-			if ( ANONY_WPML_HELP::isActive() ) {
-				$translated_page_id = icl_object_id( intval( $post_obj->ID ), 'page', false, ANONY_WPML_HELP::gatActiveLang() );
+			if ( ANONY_Wpml_Help::is_active() ) {
+				$translated_page_id = icl_object_id( intval( $post_obj->ID ), 'page', false, ANONY_Wpml_Help::gatActiveLang() );
 
 				if ( ! is_null( $translated_page_id ) ) {
 					$post_obj = get_post( $translated_page_id );
