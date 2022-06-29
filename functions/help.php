@@ -28,7 +28,7 @@ function anony_uc_page_slug($slug, $option){
 	
 	if(!ANONY_Wpml_Help::is_active()) return $slug;
 	
-	$translated_page_id = icl_object_id(intval($post_obj->ID), 'page', false, ANONY_Wpml_Help::gatActiveLang());
+	$translated_page_id = icl_object_id(intval($post_obj->ID), 'page', false, ANONY_Wpml_Help::gat_active_lang());
 	
 	if(!is_null($translated_page_id)){
 		$post_obj = get_post( $translated_page_id );

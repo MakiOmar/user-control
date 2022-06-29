@@ -28,7 +28,7 @@ $anoucsections['uc-pages']= array(
 							'id'      => 'account_page',
 							'title'   => esc_html__('Account page', ANONY_UC_TEXTDOM),
 							'type'    => 'select',
-							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
+							'options' => ANONY_Post_Help::queryPostTypeSimple('page'),
 							'default' => !is_null(get_page_by_path('anony-account')) ? get_page_by_path('anony-account')->ID : '',
 							'validate'=> 'multiple_options',
 							
@@ -38,7 +38,7 @@ $anoucsections['uc-pages']= array(
 							'id'      => 'login_page',
 							'title'   => esc_html__('Login page', ANONY_UC_TEXTDOM),
 							'type'    => 'select',
-							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
+							'options' => ANONY_Post_Help::queryPostTypeSimple('page'),
 							'default' => !is_null(get_page_by_path('anony-login')) ? get_page_by_path('anony-login')->ID : '',
 							'validate'=> 'multiple_options',
 							
@@ -48,7 +48,7 @@ $anoucsections['uc-pages']= array(
 							'id'      => 'register_page',
 							'title'   => esc_html__('Registeration page', ANONY_UC_TEXTDOM),
 							'type'    => 'select',
-							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
+							'options' => ANONY_Post_Help::queryPostTypeSimple('page'),
 							'default' => !is_null(get_page_by_path('anony-register')) ?  get_page_by_path('anony-register')->ID : '',
 							'validate'=> 'multiple_options',
 							
@@ -58,7 +58,7 @@ $anoucsections['uc-pages']= array(
 							'id'      => 'forget_password_page',
 							'title'   => esc_html__('Forget password page', ANONY_UC_TEXTDOM),
 							'type'    => 'select',
-							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
+							'options' => ANONY_Post_Help::queryPostTypeSimple('page'),
 							'default' => !is_null(get_page_by_path('anony-password-lost')) ? get_page_by_path('anony-password-lost')->ID : '',
 							'validate'=> 'multiple_options',
 							
@@ -68,7 +68,7 @@ $anoucsections['uc-pages']= array(
 							'id'      => 'reset_password_page',
 							'title'   => esc_html__('Reset password page', ANONY_UC_TEXTDOM),
 							'type'    => 'select',
-							'options' => ANONY_POST_HELP::queryPostTypeSimple('page'),
+							'options' => ANONY_Post_Help::queryPostTypeSimple('page'),
 							'default' => !is_null(get_page_by_path('anony-password-reset')) ? get_page_by_path('anony-password-reset')->ID : '',
 							'validate'=> 'multiple_options',
 							
