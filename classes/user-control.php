@@ -1127,7 +1127,7 @@ class ANONY__User_Control {
 		if ( is_object( $post_obj ) ) {
 
 			if ( ANONY_Wpml_Help::is_active() ) {
-				$translated_page_id = icl_object_id( intval( $post_obj->ID ), 'page', false, ANONY_Wpml_Help::gatActiveLang() );
+				$translated_page_id = icl_object_id( intval( $post_obj->ID ), 'page', false, ANONY_Wpml_Help::gat_active_lang() );
 
 				if ( ! is_null( $translated_page_id ) ) {
 					$post_obj = get_post( $translated_page_id );
