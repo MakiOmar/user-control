@@ -252,19 +252,24 @@ class ANONY__User_Control {
 	 * Manage redirects
 	 */
 	public function redirects() {
-        $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
-            if ( $is_api_request ) {
-    		return;
-    	}
+
 		/*------------Login redirect----------------------------------*/
 		$login_redirect = function() {
-
+            $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
+            if ( $is_api_request ) {
+        		return;
+        	}
 			$this->redirect_to( $this->redirectUrl( 'login_page', ANONY_LOGIN, esc_url( wp_login_url() ) ) );
 		};
 		add_action( 'login_form_login', $login_redirect );
 
 		/*------------Registration redirect---------------------------------*/
 		$reg_redirect = function() {
+		    
+		    $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
+            if ( $is_api_request ) {
+        		return;
+        	}
 
 			$this->redirect_to( $this->redirectUrl( 'register_page', ANONY_REG, esc_url( wp_registration_url() ) ) );
 		};
@@ -272,12 +277,20 @@ class ANONY__User_Control {
 
 		/*------------Lost password redirect-----------------------------*/
 		$lost_redirect = function() {
+		    $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
+            if ( $is_api_request ) {
+        		return;
+        	}
 			$this->redirect_to( $this->redirectUrl( 'forget_password_page', ANONY_LOST, esc_url( wp_lostpassword_url() ) ) );
 		};
 		add_action( 'login_form_lostpassword', $lost_redirect );
 
 		/*-------------------Logout redirect-----------------------------*/
 		$logout_redirect = function() {
+		    $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
+            if ( $is_api_request ) {
+        		return;
+        	}
 			$redirect = $this->redirectUrl( 'login_page', ANONY_LOGIN, esc_url( wp_login_url() ) );
 
 			$redirect = add_query_arg( 'logged_out', 'true', $redirect );
@@ -690,7 +703,9 @@ class ANONY__User_Control {
         return rest_ensure_response(wp_get_current_user());
     }
     public function wp_oauth_server_logout() {
+        header("Access-Control-Allow-Origin: *");
     	wp_logout();
+
     }
     function do_login_user_rest_api( $request )
     {
