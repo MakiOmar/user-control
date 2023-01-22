@@ -72,6 +72,8 @@ class ANONY__User_Control {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		add_action( 'after_setup_theme', array( $this, 'user_nav_menu' ) );
+		
+		add_action( 'rest_api_init', array( $this, 'rest_api_routes' ) );
 
 		add_filter( 'wp_nav_menu_' . $this->getMenuSlug() . '_items', array( $this, 'add_user_control_menu_pages' ), 10, 2 );
 
@@ -250,7 +252,10 @@ class ANONY__User_Control {
 	 * Manage redirects
 	 */
 	public function redirects() {
-
+        $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
+            if ( $is_api_request ) {
+    		return;
+    	}
 		/*------------Login redirect----------------------------------*/
 		$login_redirect = function() {
 
@@ -273,7 +278,6 @@ class ANONY__User_Control {
 
 		/*-------------------Logout redirect-----------------------------*/
 		$logout_redirect = function() {
-
 			$redirect = $this->redirectUrl( 'login_page', ANONY_LOGIN, esc_url( wp_login_url() ) );
 
 			$redirect = add_query_arg( 'logged_out', 'true', $redirect );
@@ -638,7 +642,134 @@ class ANONY__User_Control {
 	/**------------------------------------------------------------------
 	 * actions
 	 * -----------------------------------------------------------------*/
+	function rest_api_routes()
+	{
+		register_rest_route( 'smpg', '/v2/register', array(
+			'methods'             => WP_REST_Server::EDITABLE,
+			'callback'            => array($this, 'do_register_user_rest_api'),
+			'permission_callback' => array('ANONY__User_Control', 'authorization')
+		) );
+		
+		
+		register_rest_route( 'smpg', '/v2/login', array(
+            'methods'             => WP_REST_Server::EDITABLE,
+            'callback'            => array( $this, 'do_login_user_rest_api' ),
+            'args'     => [
+    			'user_login' => [
+    				'required' => true,
+    				'type'     => 'string',
+    			],
+    			
+    			'user_password' => [
+    				'required' => true,
+    				'type'     => 'string',
+    			],
+    		],
+            'permission_callback' => array( 'ANONY__User_Control' , 'authorization' ),
+        ) );
+        
+        register_rest_route( 'smpg', '/v2/logout', array(
+    		'methods'             => 'GET',
+    		'callback'            => array($this, 'wp_oauth_server_logout')
+    	) );
+    	
+    	register_rest_route( 'smpg', '/v2/current_user', array(
+    		'methods'             => 'GET',
+    		'callback'            => array($this, 'get_wp_current_user')
+    	) );
+	}
+	
+	public static function authorization($data) {
 
+            return true;
+    
+    }
+    
+    public function get_wp_current_user()
+    {
+        return rest_ensure_response(wp_get_current_user());
+    }
+    public function wp_oauth_server_logout() {
+    	wp_logout();
+    }
+    function do_login_user_rest_api( $request )
+    {
+        $data = array();
+        $data['user_login'] = $request->get_param( 'user_login' );
+        $data['user_password'] =  $request->get_param( 'user_password' );
+        $data['remember'] = true;
+        $user = wp_signon( $data, false );
+
+        if ( !is_wp_error($user) )
+        {
+            wp_set_current_user($user->ID);
+            return rest_ensure_response($user);
+        }else{
+            return rest_ensure_response(["message" => $user->get_error_message()]);
+        }
+    }
+	function do_register_user_rest_api()
+	{
+	    
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+			return;
+		}
+
+		if ( is_user_logged_in() ) {
+			$message = 'You are already logged in!';
+			
+		}
+    
+		if ( ! get_option( 'users_can_register' ) ) {
+			$message = 'Sorry! Registration is not allowed right now.';
+
+		} else {
+		    
+		    if( empty( $_POST['user_login'] ) || empty( $_POST['user_email'] ) )
+		    {
+		        $message = 'Missing username Or email.';
+		    }else{
+		        $user = new ANONY__User(
+    				array(
+    					'user_login' => sanitize_text_field( $_POST['user_login'] ),
+    					'user_email' => sanitize_email( $_POST['user_email'] ),
+    				)
+    			);
+    
+    			if ( ! empty( $user->errors ) ) {
+                    $errors = array();
+                    foreach( $user->errors as $error_code )
+                    {
+                        $errors [$error_code] = $this->show_error_message( $error_code );
+                    }
+    				wp_send_json( $errors );
+        		    die();
+        		    
+    			} else {
+    				extract( $user->user_crids );
+    
+    				$this->user_crids_notify( $username, $password, $email );
+    
+    				foreach ( $_POST as $meta_key => $meta_value ) {
+    					if ( in_array( $meta_key, array( 'user_login', 'user_email' ) ) ) {
+    						continue;
+    					}
+    					update_user_meta( $user->_user_id, $meta_key, wp_strip_all_tags( $meta_value ) );
+    				}
+    
+    				wp_send_json( $user );
+        		    die();
+    			}
+		    }
+            
+		}
+
+		if( isset($message) )
+		{
+			wp_send_json( $message );
+    		die();
+		}
+	}
 	/**
 	 * Description
 	 *
@@ -865,6 +996,10 @@ class ANONY__User_Control {
 	}
 
 	public function authenticate_redirect_handling( $user, $username, $password ) {
+	    $is_api_request = ( ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) );
+        if ( $is_api_request ) {
+    		return $user ;
+    	}
 		// Check if the earlier authenticate filter (most likely,
 		// the default WordPress authentication) functions have found errors
 		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
@@ -881,6 +1016,7 @@ class ANONY__User_Control {
 
 		return $user;
 	}
+	
 	public function show_error_message( $error_code ) {
 		switch ( $error_code ) {
 			case 'empty_username':
